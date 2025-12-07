@@ -1,0 +1,50 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 min-h-[80vh]">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-white font-semibold text-lg">Raw Data Preview (SQL Fetch)</h3>
+        <button class="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+            Export CSV
+        </button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wider">
+                    <th class="p-4 font-semibold">Date</th>
+                    <th class="p-4 font-semibold">City</th>
+                    <th class="p-4 font-semibold">Product</th>
+                    <th class="p-4 font-semibold">Units</th>
+                    <th class="p-4 font-semibold">Profit</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-300 text-sm">
+                <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
+                    <td class="p-4">2023-12-31</td>
+                    <td class="p-4">VALENZUELA</td>
+                    <td class="p-4">Headset</td>
+                    <td class="p-4">12</td>
+                    <td class="p-4 text-teal-400 font-medium">+₱14,400</td>
+                </tr>
+                <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
+                    <td class="p-4">2024-01-01</td>
+                    <td class="p-4">BULACAN</td>
+                    <td class="p-4">Mouse</td>
+                    <td class="p-4">10</td>
+                    <td class="p-4 text-teal-400 font-medium">+₱12,000</td>
+                </tr>
+                <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
+                    <td class="p-4">2024-01-02</td>
+                    <td class="p-4">MANILA</td>
+                    <td class="p-4">Laptop</td>
+                    <td class="p-4">3</td>
+                    <td class="p-4 text-teal-400 font-medium">+₱90,000</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

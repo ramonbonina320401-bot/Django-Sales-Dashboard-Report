@@ -1,0 +1,305 @@
+/* dashboard/static/css/style.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-app: #0e0f12;       /* The deep black background */
+    --bg-panel: #16171d;     /* The card background */
+    --bg-panel-hover: #1c1d24;
+    --border-subtle: #25262c;
+    
+    --primary: #00c2a2;      /* The specific Teal from image */
+    --primary-dim: rgba(0, 194, 162, 0.15);
+    
+    --text-white: #ffffff;
+    --text-gray: #9ca3af;
+    --text-dark: #6b7280;
+    
+    --radius-card: 16px;
+    --radius-sm: 8px;
+    
+    --sidebar-width: 72px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Clean modern font */
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-white);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+}
+
+/* ===========================
+   1. SIDEBAR (Fixed Left) 
+   =========================== */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--bg-app); /* Blends with body */
+    border-right: 1px solid var(--border-subtle);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    z-index: 50;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%); /* Blue gradient from image */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    margin-bottom: 48px;
+    box-shadow: 0 4px 12px rgba(0, 91, 234, 0.3);
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    align-items: center;
+}
+
+.nav-item {
+    color: var(--text-dark);
+    font-size: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+}
+
+.nav-item:hover {
+    color: var(--text-white);
+    background: rgba(255,255,255,0.05);
+}
+
+.nav-item.active {
+    color: var(--primary);
+    background: transparent;
+}
+
+/* The glowing teal indicator line */
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    width: 3px;
+    height: 24px;
+    background-color: var(--primary);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* ===========================
+   2. MAIN CONTENT AREA 
+   =========================== */
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: 32px 48px;
+}
+
+/* Header */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-white);
+}
+
+.page-header i {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.profile-widget {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-panel);
+    padding: 6px 16px 6px 6px;
+    border-radius: 30px;
+    border: 1px solid var(--border-subtle);
+}
+
+.profile-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-app);
+}
+
+.profile-info {
+    text-align: right;
+    line-height: 1.2;
+}
+.profile-name { font-size: 12px; font-weight: 700; color: white; }
+.profile-role { font-size: 10px; color: var(--text-gray); }
+
+/* ===========================
+   3. DASHBOARD COMPONENTS
+   =========================== */
+
+/* Grid Systems */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px; }
+/* Asymmetrical split for Sales charts (Left chart wider) */
+.grid-split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
+
+/* Cards */
+.panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Typography Helpers */
+.label-sm {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-gray);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.val-xl {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 8px;
+}
+
+.sub-caption {
+    font-size: 12px;
+    color: var(--text-dark);
+}
+
+.badge-green {
+    background-color: var(--primary-dim);
+    color: var(--primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+.text-teal { color: var(--primary); }
+
+/* Filter Bar (The Floating Island) */
+.filter-island {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-left { display: flex; align-items: center; gap: 16px; }
+.icon-box {
+    width: 36px; height: 36px;
+    background: #122825; /* Dark Green bg */
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+}
+
+.pill-group { display: flex; gap: 8px; }
+.pill {
+    background: var(--bg-app);
+    border: 1px solid var(--border-subtle);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.pill:hover { border-color: var(--primary); background: var(--primary-dim); }
+
+/* Chart Containers */
+.chart-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.chart-icon { color: var(--text-gray); font-size: 14px; }
+.chart-title { font-weight: 600; font-size: 14px; }
+.chart-area { position: relative; height: 260px; width: 100%; }
+
+/* Table Styles (Data Page) */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { 
+    text-align: left; 
+    color: var(--text-dark); 
+    font-size: 11px; 
+    text-transform: uppercase; 
+    padding: 16px; 
+    border-bottom: 1px solid var(--border-subtle);
+}
+.data-table td { 
+    padding: 16px; 
+    color: #fff; 
+    border-bottom: 1px solid var(--border-subtle); 
+    font-size: 13px;
+}
+.data-table tr:hover td { background-color: rgba(255,255,255,0.02); }
+
+/* Confusion Matrix Box */
+.matrix-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    height: 100%;
+}
+.matrix-cell {
+    background: #000;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: 700;
+}
+.tp { color: var(--primary); border-color: var(--primary); }
+.fn { color: #ef4444; } /* Red */
+.fp { color: #ef4444; }
+.tn { color: #fff; }

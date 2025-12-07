@@ -1,0 +1,96 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
+            <span class="text-white font-semibold">Market Share</span>
+        </div>
+        <div class="relative flex-1 min-h-[300px]">
+            <canvas id="marketChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
+            <span class="text-white font-semibold">Profitability</span>
+        </div>
+        <div class="relative flex-1 min-h-[300px]">
+            <canvas id="profitChart"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
+            <span class="text-white font-semibold">Product Share</span>
+        </div>
+        <div class="relative flex-1 min-h-[300px]">
+            <canvas id="productChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Donut
+    new Chart(document.getElementById("marketChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["Monitor", "Headset", "Keyboard"],
+            datasets: [{
+                data: [50, 25, 25],
+                backgroundColor: ["#14b8a6", "#0d9488", "#2dd4bf"], // teal-500, teal-600, teal-400
+                borderWidth: 0,
+                hoverOffset: 5
+            }]
+        },
+        options: { 
+            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            plugins: { 
+                legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, boxWidth: 6, padding: 20 } } 
+            }
+        }
+    });
+
+    // 2. Combined Bar
+    new Chart(document.getElementById("profitChart"), {
+        type: "bar",
+        data: {
+            labels: ["Q1", "Q2", "Q3", "Q4"],
+            datasets: [
+                { label: 'Rev', data: [30, 50, 20, 40], backgroundColor: '#374151' }, // gray-700
+                { label: 'Profit', data: [10, 25, 5, 20], backgroundColor: '#14b8a6' } // teal-500
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { 
+                x: { stacked: false, grid: { display: false }, ticks: { color: '#9ca3af' } }, 
+                y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } } 
+            }
+        }
+    });
+
+    // 3. Pie
+    new Chart(document.getElementById("productChart"), {
+        type: "pie",
+        data: {
+            labels: ["A", "B", "C"],
+            datasets: [{
+                data: [30, 40, 30],
+                backgroundColor: ["#14b8a6", "#0d9488", "#2dd4bf"],
+                borderWidth: 0
+            }]
+        },
+        options: { 
+            responsive: true, maintainAspectRatio: false,
+            plugins: { 
+                legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, boxWidth: 6, padding: 20 } } 
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-900 min-h-screen flex text-gray-200 font-sans">
+
+    <nav class="w-20 bg-gray-800 flex flex-col items-center py-6 shadow-2xl z-10">
+        <div class="p-3 bg-teal-500 rounded-lg text-white mb-10 shadow-lg">
+            <i class="fas fa-th-large text-xl"></i>
+        </div>
+
+        <div class="flex flex-col gap-6">
+            <a href="{% url 'sales' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'sales' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                <i class="fas fa-home text-xl"></i>
+            </a>
+            <a href="{% url 'market' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'market' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                <i class="fas fa-chart-pie text-xl"></i>
+            </a>
+            <a href="{% url 'data' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'data' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                <i class="fas fa-database text-xl"></i>
+            </a>
+            <a href="{% url 'eval' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'eval' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                <i class="fas fa-sliders-h text-xl"></i>
+            </a>
+        </div>
+        
+        <div class="mt-auto">
+             <a href="#" class="nav-item p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <i class="fas fa-cog text-xl"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-gray-900 border-b border-gray-700/50 p-6 flex justify-between items-center shadow-md relative z-20">
+    <div class="flex items-center space-x-2 text-xl font-medium text-white">
+        <i class="fas fa-chevron-right text-teal-500 text-sm"></i>
+        <span class="text-2xl">
+            {% if active_page == 'sales' %} Sales Report
+            {% elif active_page == 'market' %} Market Shares
+            {% elif active_page == 'data' %} Raw Data Preview
+            {% elif active_page == 'eval' %} Model Evaluation
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="relative">
+        <button id="user-menu-button" onclick="toggleProfileMenu()" class="flex items-center space-x-3 focus:outline-none bg-transparent hover:bg-gray-800 p-2 rounded-lg transition-colors duration-200">
+            <div class="text-right hidden md:block">
+                <div class="font-semibold text-gray-100 text-sm">{{ user.username|default:"Nonong Cruz" }}</div>
+                <div class="text-xs text-gray-400">Admin</div>
+            </div>
+            <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Nonong+Cruz' }}&background=00c2a2&color=fff" 
+                 class="h-10 w-10 rounded-full border-2 border-teal-500" alt="User">
+            <i class="fas fa-chevron-down text-gray-500 text-xs ml-2 transition-transform duration-200" id="menu-arrow"></i>
+        </button>
+
+        <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl border border-gray-700/50 transform opacity-0 invisible scale-95 transition-all duration-200 origin-top-right z-50">
+            <div class="py-1">
+                <div class="px-4 py-2 border-b border-gray-700/50">
+                    <p class="text-sm text-white font-medium">Signed in as</p>
+                    <p class="text-xs text-gray-400 truncate">{{ user.username|default:"Admin" }}</p>
+                </div>
+                
+                <form action="{% url 'logout' %}" method="post" class="w-full">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i> Sign out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="flex-1 p-6 overflow-y-auto">
+            <script>
+                Chart.defaults.color = "#9ca3af"; 
+                Chart.defaults.borderColor = "#374151"; 
+                Chart.defaults.font.family = "'Inter', sans-serif";
+            </script>
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script>
+    function toggleProfileMenu() {
+        const menu = document.getElementById('user-menu');
+        const arrow = document.getElementById('menu-arrow');
+        
+        // Check if currently hidden
+        const isHidden = menu.classList.contains('invisible');
+
+        if (isHidden) {
+            // OPEN MENU
+            menu.classList.remove('invisible', 'opacity-0', 'scale-95');
+            menu.classList.add('opacity-100', 'scale-100');
+            // Rotate Arrow
+            arrow.classList.add('rotate-180');
+        } else {
+            // CLOSE MENU
+            menu.classList.add('invisible', 'opacity-0', 'scale-95');
+            menu.classList.remove('opacity-100', 'scale-100');
+            // Reset Arrow
+            arrow.classList.remove('rotate-180');
+        }
+    }
+
+    // Close menu when clicking outside
+    window.addEventListener('click', function(e) {
+        const btn = document.getElementById('user-menu-button');
+        const menu = document.getElementById('user-menu');
+        const arrow = document.getElementById('menu-arrow');
+
+        // If the click is NOT on the button AND NOT inside the menu
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add('invisible', 'opacity-0', 'scale-95');
+            menu.classList.remove('opacity-100', 'scale-100');
+            arrow.classList.remove('rotate-180');
+        }
+    });
+</script>
+</body>
+</html>
