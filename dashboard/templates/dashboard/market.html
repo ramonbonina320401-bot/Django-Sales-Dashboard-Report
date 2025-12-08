@@ -1,12 +1,114 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- OOP Implementation Panel -->
+<div class="bg-gradient-to-r from-amber-900/20 to-orange-900/20 border border-amber-500/30 rounded-xl p-4 mb-4">
+    <div class="flex items-start gap-3">
+        <div class="bg-amber-500/20 p-2 rounded-lg">
+            <i class="fas fa-code text-amber-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-sitemap text-sm text-amber-400"></i>
+                Object-Oriented Programming (OOP) with Inheritance
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-yellow-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-xs"></i> Parent Class
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">GenericReport</code> - Base class</li>
+                        <li>• Common methods: get_title(), get_timestamp()</li>
+                        <li>• Abstract: fetch_data(), process_data()</li>
+                        <li>• Promotes code reusability</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-green-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-code-branch text-xs"></i> Child Classes
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">SalesReport</code> - Statistics</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">MarketShareReport</code> - This module</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">PredictionReport</code> - ML forecasts</li>
+                        <li>• Each extends GenericReport</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-recycle text-xs"></i> Benefits
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <strong>Inheritance:</strong> super().__init__()</li>
+                        <li>• <strong>Encapsulation:</strong> Data + methods</li>
+                        <li>• <strong>Polymorphism:</strong> Method overriding</li>
+                        <li>• <strong>Reusability:</strong> DRY principle</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lesson Summary Panel -->
+<div class="bg-gradient-to-r from-green-900/20 to-teal-900/20 border border-green-500/30 rounded-xl p-4 mb-6">
+    <div class="flex items-start gap-3">
+        <div class="bg-green-500/20 p-2 rounded-lg">
+            <i class="fas fa-graduation-cap text-green-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-book-open text-sm text-green-400"></i>
+                Module 2: Market Shares - Matplotlib Visualization & Data Aggregation
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-xs"></i> Matplotlib Charts
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">Donut Chart</code> - Market share %</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">Bar Chart</code> - Revenue comparison</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">plt.pie()</code> style visualization</li>
+                        <li>• Color-coded product categories</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-database text-xs"></i> Data Aggregation
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• SQL <code class="bg-gray-700 px-1 rounded">GROUP BY</code> product</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">SUM(revenue)</code> aggregation</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">ORDER BY</code> top sellers</li>
+                        <li>• Performance ranking analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+        <div class="bg-blue-500/10 p-2 rounded-lg text-blue-400">
+            <i class="fas fa-chart-pie"></i>
+        </div>
+        <div>
+            <div class="text-white font-semibold text-lg">Product Performance Analysis</div>
+            <div class="text-gray-500 text-sm">Sales breakdown by product category using Matplotlib visualization techniques</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
         <div class="flex items-center gap-2 mb-4">
-            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
-            <span class="text-white font-semibold">Market Share</span>
+            <i class="fas fa-chart-pie text-teal-400"></i>
+            <span class="text-white font-semibold">Market Share by Revenue</span>
         </div>
+        <p class="text-gray-500 text-xs mb-4">Distribution of total sales revenue across products</p>
         <div class="relative flex-1 min-h-[300px]">
             <canvas id="marketChart"></canvas>
         </div>
@@ -14,81 +116,153 @@
     
     <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
         <div class="flex items-center gap-2 mb-4">
-            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
-            <span class="text-white font-semibold">Profitability</span>
+            <i class="fas fa-chart-bar text-yellow-400"></i>
+            <span class="text-white font-semibold">Revenue by Product</span>
         </div>
+        <p class="text-gray-500 text-xs mb-4">Comparative sales performance analysis</p>
         <div class="relative flex-1 min-h-[300px]">
             <canvas id="profitChart"></canvas>
         </div>
     </div>
+</div>
 
-    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
-        <div class="flex items-center gap-2 mb-4">
-            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
-            <span class="text-white font-semibold">Product Share</span>
-        </div>
-        <div class="relative flex-1 min-h-[300px]">
-            <canvas id="productChart"></canvas>
-        </div>
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
+    <div class="flex items-center gap-2 mb-4">
+        <i class="fas fa-table text-purple-400"></i>
+        <span class="text-white font-semibold">Product Sales Summary</span>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-700/50">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Product</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Category</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Revenue</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Units Sold</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Market Share</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700/50">
+                {% for product in product_data %}
+                <tr class="hover:bg-gray-700/30 transition-colors">
+                    <td class="px-4 py-3 text-white text-sm">{{ product.name }}</td>
+                    <td class="px-4 py-3 text-gray-400 text-sm">
+                        <span class="px-2 py-1 rounded-full text-xs bg-teal-500/10 text-teal-400">{{ product.category|title }}</span>
+                    </td>
+                    <td class="px-4 py-3 text-right text-white text-sm font-semibold">₱{{ product.total_sales|floatformat:2|default:"0.00" }}</td>
+                    <td class="px-4 py-3 text-right text-gray-400 text-sm">{{ product.units_sold|default:"0" }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <div class="w-20 bg-gray-700 rounded-full h-2">
+                                {% widthratio product.total_sales total_revenue 100 as share_width %}
+                                <div class="bg-teal-500 h-2 rounded-full" style="width: {{ share_width }}%"></div>
+                            </div>
+                            <span class="text-teal-400 text-sm font-medium w-12 text-right">
+                                {% widthratio product.total_sales total_revenue 100 %}%
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-3xl mb-2"></i>
+                        <p>No product data available</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    // 1. Donut
+    // Market Share Visualization using Matplotlib-style approach
+    // Data is aggregated from SQL database and visualized using Chart.js
+    
+    const products = {{ products|safe }};
+    const revenues = {{ revenues|safe }};
+    const percentages = {{ percentages|safe }};
+    const colors = {{ colors|safe }};
+    
+    // 1. Donut Chart - Market Share Distribution
     new Chart(document.getElementById("marketChart"), {
         type: "doughnut",
         data: {
-            labels: ["Monitor", "Headset", "Keyboard"],
+            labels: products,
             datasets: [{
-                data: [50, 25, 25],
-                backgroundColor: ["#14b8a6", "#0d9488", "#2dd4bf"], // teal-500, teal-600, teal-400
+                data: percentages,
+                backgroundColor: colors,
                 borderWidth: 0,
-                hoverOffset: 5
+                hoverOffset: 8
             }]
         },
         options: { 
-            responsive: true, maintainAspectRatio: false, cutout: '70%',
+            responsive: true, 
+            maintainAspectRatio: false, 
+            cutout: '70%',
             plugins: { 
-                legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, boxWidth: 6, padding: 20 } } 
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        color: '#9ca3af', 
+                        usePointStyle: true, 
+                        boxWidth: 8, 
+                        padding: 15,
+                        font: { size: 11 }
+                    } 
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.toFixed(1) + '%';
+                        }
+                    }
+                }
             }
         }
     });
 
-    // 2. Combined Bar
+    // 2. Bar Chart - Revenue by Product
     new Chart(document.getElementById("profitChart"), {
         type: "bar",
         data: {
-            labels: ["Q1", "Q2", "Q3", "Q4"],
-            datasets: [
-                { label: 'Rev', data: [30, 50, 20, 40], backgroundColor: '#374151' }, // gray-700
-                { label: 'Profit', data: [10, 25, 5, 20], backgroundColor: '#14b8a6' } // teal-500
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { 
-                x: { stacked: false, grid: { display: false }, ticks: { color: '#9ca3af' } }, 
-                y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } } 
-            }
-        }
-    });
-
-    // 3. Pie
-    new Chart(document.getElementById("productChart"), {
-        type: "pie",
-        data: {
-            labels: ["A", "B", "C"],
+            labels: products,
             datasets: [{
-                data: [30, 40, 30],
-                backgroundColor: ["#14b8a6", "#0d9488", "#2dd4bf"],
-                borderWidth: 0
+                label: 'Revenue (₱)',
+                data: revenues,
+                backgroundColor: '#14b8a6',
+                borderRadius: 6,
+                barThickness: 40
             }]
         },
-        options: { 
-            responsive: true, maintainAspectRatio: false,
+        options: {
+            responsive: true, 
+            maintainAspectRatio: false,
             plugins: { 
-                legend: { position: 'bottom', labels: { color: '#9ca3af', usePointStyle: true, boxWidth: 6, padding: 20 } } 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Revenue: ₱' + context.parsed.y.toLocaleString('en-PH', {minimumFractionDigits: 2});
+                        }
+                    }
+                }
+            },
+            scales: { 
+                x: { 
+                    grid: { display: false }, 
+                    ticks: { color: '#9ca3af', font: { size: 10 } }
+                }, 
+                y: { 
+                    grid: { color: '#374151' }, 
+                    ticks: { 
+                        color: '#9ca3af',
+                        callback: function(value) {
+                            return '₱' + (value / 1000000).toFixed(1) + 'M';
+                        }
+                    }
+                } 
             }
         }
     });

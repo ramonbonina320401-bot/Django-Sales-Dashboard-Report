@@ -1,50 +1,156 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
-<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 min-h-[80vh]">
+<!-- Lesson Summary Panel -->
+<div class="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/30 rounded-xl p-4 mb-6">
+    <div class="flex items-start gap-3">
+        <div class="bg-cyan-500/20 p-2 rounded-lg">
+            <i class="fas fa-graduation-cap text-cyan-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-book-open text-sm text-cyan-400"></i>
+                Module 3: Raw Data Preview - SQL Database & JSON Handling
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-database text-xs"></i> SQL Operations
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">SELECT * FROM</code> sales_data</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">INNER JOIN</code> products table</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">ORDER BY date DESC</code> sorting</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">LIMIT 100</code> pagination</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-blue-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-exchange-alt text-xs"></i> CRUD Operations
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <strong>Read:</strong> Fetch sales records</li>
+                        <li>• <strong>Export:</strong> CSV & JSON generation</li>
+                        <li>• <strong>Refresh:</strong> Real-time data reload</li>
+                        <li>• Django ORM with SQLite backend</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-file-code text-xs"></i> JSON Handling
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">json.dumps()</code> - Serialize to JSON</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">json.loads()</code> - Parse JSON string</li>
+                        <li>• Data interchange format</li>
+                        <li>• Python dict → JSON conversion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
+    <div class="flex items-center gap-3">
+        <div class="bg-green-500/10 p-2 rounded-lg text-green-400">
+            <i class="fas fa-database"></i>
+        </div>
+        <div>
+            <div class="text-white font-semibold text-lg">SQL Database Integration</div>
+            <div class="text-gray-500 text-sm">Direct database query using Django ORM (SQL SELECT with JOIN)</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
+        <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Total Records</div>
+        <div class="text-3xl font-bold text-white">{{ total_records }}</div>
+        <div class="text-gray-500 text-xs mt-1">Sales transactions</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
+        <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Products</div>
+        <div class="text-3xl font-bold text-white">{{ total_products }}</div>
+        <div class="text-gray-500 text-xs mt-1">Active products</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
+        <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Data Source</div>
+        <div class="text-xl font-bold text-teal-400">SQLite</div>
+        <div class="text-gray-500 text-xs mt-1">db.sqlite3</div>
+    </div>
+</div>
+
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 min-h-[60vh]">
     <div class="flex justify-between items-center mb-6">
-        <h3 class="text-white font-semibold text-lg">Raw Data Preview (SQL Fetch)</h3>
-        <button class="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
-            Export CSV
-        </button>
+        <div>
+            <h3 class="text-white font-semibold text-lg">Raw Sales Data</h3>
+            <p class="text-gray-500 text-sm">Recent 100 transactions from database</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="window.location.reload()" class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <a href="{% url 'export_csv' %}" class="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                <i class="fas fa-download"></i> Export CSV
+            </a>
+            <a href="{% url 'export_json' %}" class="bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                <i class="fas fa-file-code"></i> Export JSON
+            </a>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wider">
+                    <th class="p-4 font-semibold">ID</th>
                     <th class="p-4 font-semibold">Date</th>
-                    <th class="p-4 font-semibold">City</th>
                     <th class="p-4 font-semibold">Product</th>
-                    <th class="p-4 font-semibold">Units</th>
-                    <th class="p-4 font-semibold">Profit</th>
+                    <th class="p-4 font-semibold">Category</th>
+                    <th class="p-4 font-semibold text-right">Quantity</th>
+                    <th class="p-4 font-semibold text-right">Revenue</th>
+                    <th class="p-4 font-semibold text-right">Cost</th>
+                    <th class="p-4 font-semibold text-right">Profit</th>
                 </tr>
             </thead>
             <tbody class="text-gray-300 text-sm">
+                {% for sale in sales_data %}
                 <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
-                    <td class="p-4">2023-12-31</td>
-                    <td class="p-4">VALENZUELA</td>
-                    <td class="p-4">Headset</td>
-                    <td class="p-4">12</td>
-                    <td class="p-4 text-teal-400 font-medium">+₱14,400</td>
+                    <td class="p-4 text-gray-500">#{{ sale.id }}</td>
+                    <td class="p-4">{{ sale.date|date:"Y-m-d" }}</td>
+                    <td class="p-4 text-white font-medium">{{ sale.product.name }}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded-full text-xs bg-teal-500/10 text-teal-400">
+                            {{ sale.product.category|title }}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right">{{ sale.quantity }}</td>
+                    <td class="p-4 text-right text-blue-400">₱{{ sale.revenue|floatformat:2 }}</td>
+                    <td class="p-4 text-right text-gray-400">₱{{ sale.cost|floatformat:2 }}</td>
+                    <td class="p-4 text-right font-medium {% if sale.profit > 0 %}text-teal-400{% else %}text-red-400{% endif %}">
+                        {% if sale.profit > 0 %}+{% endif %}₱{{ sale.profit|floatformat:2 }}
+                    </td>
                 </tr>
-                <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
-                    <td class="p-4">2024-01-01</td>
-                    <td class="p-4">BULACAN</td>
-                    <td class="p-4">Mouse</td>
-                    <td class="p-4">10</td>
-                    <td class="p-4 text-teal-400 font-medium">+₱12,000</td>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="p-8 text-center text-gray-500">
+                        <i class="fas fa-database text-4xl mb-3"></i>
+                        <p class="text-lg">No sales data available</p>
+                        <p class="text-sm mt-2">Run <code class="bg-gray-700 px-2 py-1 rounded">python manage.py populate_sales</code> to generate sample data</p>
+                    </td>
                 </tr>
-                <tr class="border-b border-gray-700/50 hover:bg-gray-700/50 transition-colors">
-                    <td class="p-4">2024-01-02</td>
-                    <td class="p-4">MANILA</td>
-                    <td class="p-4">Laptop</td>
-                    <td class="p-4">3</td>
-                    <td class="p-4 text-teal-400 font-medium">+₱90,000</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
+    
+    {% if sales_data %}
+    <div class="mt-4 text-gray-500 text-sm flex items-center gap-2">
+        <i class="fas fa-info-circle"></i>
+        <span>SQL Query: <code class="bg-gray-700 px-2 py-1 rounded text-xs">SELECT * FROM sales_data JOIN products ON sales_data.product_id = products.id ORDER BY date DESC LIMIT 100</code></span>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

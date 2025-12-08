@@ -35,13 +35,80 @@
                 <i class="fas fa-sliders-h text-xl"></i>
             </a>
         </div>
-        
-        <div class="mt-auto">
-             <a href="#" class="nav-item p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-all duration-200">
-                <i class="fas fa-cog text-xl"></i>
-            </a>
-        </div>
     </nav>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700/50 w-full max-w-md m-4 transform transition-all">
+            <div class="flex items-center justify-between p-6 border-b border-gray-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="bg-teal-500/10 p-2 rounded-lg text-teal-400">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Settings</h3>
+                </div>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Theme Toggle -->
+                <div class="space-y-3">
+                    <label class="text-gray-300 text-sm font-semibold uppercase tracking-wider">Theme</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="setTheme('dark')" id="dark-theme-btn" class="theme-btn flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-teal-500 bg-teal-500/10 text-teal-400 transition-all">
+                            <i class="fas fa-moon"></i>
+                            <span class="font-medium">Dark</span>
+                        </button>
+                        <button onclick="setTheme('light')" id="light-theme-btn" class="theme-btn flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-gray-600 bg-gray-700/50 text-gray-400 hover:border-gray-500 transition-all">
+                            <i class="fas fa-sun"></i>
+                            <span class="font-medium">Light</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional Settings -->
+                <div class="space-y-3">
+                    <label class="text-gray-300 text-sm font-semibold uppercase tracking-wider">Display</label>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
+                        <span class="text-gray-300 text-sm">Animations</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
+                        <span class="text-gray-300 text-sm">Auto-refresh Data</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="p-4 rounded-lg bg-teal-500/10 border border-teal-500/20">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-info-circle text-teal-400 mt-0.5"></i>
+                        <div class="text-sm text-gray-300">
+                            <p class="font-semibold text-teal-400 mb-1">Dashboard v1.0</p>
+                            <p class="text-gray-400 text-xs">Powered by Django, NumPy, Matplotlib & scikit-learn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 p-6 border-t border-gray-700/50">
+                <button onclick="toggleSettings()" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                    Cancel
+                </button>
+                <button onclick="saveSettings()" class="flex-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
 
     <main class="flex-1 flex flex-col overflow-hidden">
         <header class="bg-gray-900 border-b border-gray-700/50 p-6 flex justify-between items-center shadow-md relative z-20">
@@ -56,30 +123,38 @@
         </span>
     </div>
 
-    <div class="relative">
-        <button id="user-menu-button" onclick="toggleProfileMenu()" class="flex items-center space-x-3 focus:outline-none bg-transparent hover:bg-gray-800 p-2 rounded-lg transition-colors duration-200">
-            <div class="text-right hidden md:block">
-                <div class="font-semibold text-gray-100 text-sm">{{ user.username|default:"Nonong Cruz" }}</div>
-                <div class="text-xs text-gray-400">Admin</div>
-            </div>
-            <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Nonong+Cruz' }}&background=00c2a2&color=fff" 
-                 class="h-10 w-10 rounded-full border-2 border-teal-500" alt="User">
-            <i class="fas fa-chevron-down text-gray-500 text-xs ml-2 transition-transform duration-200" id="menu-arrow"></i>
+    <div class="flex items-center gap-3">
+        <!-- Settings Button -->
+        <button onclick="toggleSettings()" class="p-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-all duration-200">
+            <i class="fas fa-cog text-xl"></i>
         </button>
 
-        <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl border border-gray-700/50 transform opacity-0 invisible scale-95 transition-all duration-200 origin-top-right z-50">
-            <div class="py-1">
-                <div class="px-4 py-2 border-b border-gray-700/50">
-                    <p class="text-sm text-white font-medium">Signed in as</p>
-                    <p class="text-xs text-gray-400 truncate">{{ user.username|default:"Admin" }}</p>
+        <!-- Profile Dropdown -->
+        <div class="relative">
+            <button id="user-menu-button" onclick="toggleProfileMenu()" class="flex items-center space-x-3 focus:outline-none bg-transparent hover:bg-gray-800 p-2 rounded-lg transition-colors duration-200">
+                <div class="text-right hidden md:block">
+                    <div class="font-semibold text-gray-100 text-sm">{{ user.username|default:"Nonong Cruz" }}</div>
+                    <div class="text-xs text-gray-400">Admin</div>
                 </div>
-                
-                <form action="{% url 'logout' %}" method="post" class="w-full">
-                    {% csrf_token %}
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors flex items-center gap-2">
-                        <i class="fas fa-sign-out-alt"></i> Sign out
-                    </button>
-                </form>
+                <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Nonong+Cruz' }}&background=00c2a2&color=fff" 
+                     class="h-10 w-10 rounded-full border-2 border-teal-500" alt="User">
+                <i class="fas fa-chevron-down text-gray-500 text-xs ml-2 transition-transform duration-200" id="menu-arrow"></i>
+            </button>
+
+            <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl border border-gray-700/50 transform opacity-0 invisible scale-95 transition-all duration-200 origin-top-right z-50">
+                <div class="py-1">
+                    <div class="px-4 py-2 border-b border-gray-700/50">
+                        <p class="text-sm text-white font-medium">Signed in as</p>
+                        <p class="text-xs text-gray-400 truncate">{{ user.username|default:"Admin" }}</p>
+                    </div>
+                    
+                    <form action="{% url 'logout' %}" method="post" class="w-full">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors flex items-center gap-2">
+                            <i class="fas fa-sign-out-alt"></i> Sign out
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -97,24 +172,20 @@
     </main>
 
     <script>
+    // Profile Menu Toggle
     function toggleProfileMenu() {
         const menu = document.getElementById('user-menu');
         const arrow = document.getElementById('menu-arrow');
         
-        // Check if currently hidden
         const isHidden = menu.classList.contains('invisible');
 
         if (isHidden) {
-            // OPEN MENU
             menu.classList.remove('invisible', 'opacity-0', 'scale-95');
             menu.classList.add('opacity-100', 'scale-100');
-            // Rotate Arrow
             arrow.classList.add('rotate-180');
         } else {
-            // CLOSE MENU
             menu.classList.add('invisible', 'opacity-0', 'scale-95');
             menu.classList.remove('opacity-100', 'scale-100');
-            // Reset Arrow
             arrow.classList.remove('rotate-180');
         }
     }
@@ -125,13 +196,100 @@
         const menu = document.getElementById('user-menu');
         const arrow = document.getElementById('menu-arrow');
 
-        // If the click is NOT on the button AND NOT inside the menu
         if (!btn.contains(e.target) && !menu.contains(e.target)) {
             menu.classList.add('invisible', 'opacity-0', 'scale-95');
             menu.classList.remove('opacity-100', 'scale-100');
             arrow.classList.remove('rotate-180');
         }
     });
+
+    // Settings Modal Toggle
+    function toggleSettings() {
+        const modal = document.getElementById('settings-modal');
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('settings-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            toggleSettings();
+        }
+    });
+
+    // Theme Management
+    function setTheme(theme) {
+        const body = document.body;
+        const darkBtn = document.getElementById('dark-theme-btn');
+        const lightBtn = document.getElementById('light-theme-btn');
+        
+        if (theme === 'light') {
+            body.classList.remove('bg-gray-900');
+            body.classList.add('bg-gray-100');
+            
+            // Update all dark elements to light
+            document.querySelectorAll('.bg-gray-800').forEach(el => {
+                el.classList.remove('bg-gray-800');
+                el.classList.add('bg-white', 'light-mode');
+            });
+            
+            document.querySelectorAll('.text-gray-200, .text-white').forEach(el => {
+                el.classList.add('text-gray-800', 'light-mode-text');
+            });
+            
+            document.querySelectorAll('.border-gray-700').forEach(el => {
+                el.classList.remove('border-gray-700');
+                el.classList.add('border-gray-200', 'light-mode');
+            });
+            
+            // Update buttons
+            lightBtn.classList.remove('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            lightBtn.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            darkBtn.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            darkBtn.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.classList.remove('bg-gray-100');
+            body.classList.add('bg-gray-900');
+            
+            // Restore dark elements
+            document.querySelectorAll('.light-mode').forEach(el => {
+                el.classList.remove('bg-white', 'border-gray-200', 'light-mode');
+                el.classList.add('bg-gray-800', 'border-gray-700');
+            });
+            
+            document.querySelectorAll('.light-mode-text').forEach(el => {
+                el.classList.remove('text-gray-800', 'light-mode-text');
+            });
+            
+            // Update buttons
+            darkBtn.classList.remove('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            darkBtn.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            lightBtn.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            lightBtn.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            setTheme('light');
+        }
+    });
+
+    function saveSettings() {
+        toggleSettings();
+        // Show success message
+        const notification = document.createElement('div');
+        notification.className = 'fixed bottom-4 right-4 bg-teal-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+        notification.innerHTML = '<i class="fas fa-check-circle"></i> Settings saved successfully!';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
 </script>
 </body>
 </html>

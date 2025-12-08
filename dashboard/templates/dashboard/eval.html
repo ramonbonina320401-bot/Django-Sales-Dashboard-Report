@@ -1,55 +1,161 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
+<!-- Lesson Summary Panel -->
+<div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-xl p-4 mb-6">
+    <div class="flex items-start gap-3">
+        <div class="bg-purple-500/20 p-2 rounded-lg">
+            <i class="fas fa-graduation-cap text-purple-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-book-open text-sm text-purple-400"></i>
+                Module 4: Model Evaluation - Classification (Not Regression)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-brain text-xs"></i> ML Classification
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• Predicts <strong>categories</strong> (not numbers)</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">confusion_matrix()</code> from scikit-learn</li>
+                        <li>• Binary: "Increase" or "No Increase"</li>
+                        <li>• <strong>Different from Module 1's Regression</strong></li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-pink-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-xs"></i> Performance Metrics
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <strong>Accuracy:</strong> Overall correctness</li>
+                        <li>• <strong>Precision:</strong> Positive predictive value</li>
+                        <li>• <strong>Recall:</strong> Sensitivity measure</li>
+                        <li>• <strong>F1 Score:</strong> Harmonic mean</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-orange-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-exchange-alt text-xs"></i> vs Regression
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <strong>Classification:</strong> "Yes/No" labels</li>
+                        <li>• <strong>Regression:</strong> Numeric values (₱)</li>
+                        <li>• Module 1 = Regression</li>
+                        <li>• Module 4 = Classification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
+    <div class="flex items-center gap-3">
+        <div class="bg-purple-500/10 p-2 rounded-lg text-purple-400">
+            <i class="fas fa-brain"></i>
+        </div>
+        <div>
+            <div class="text-white font-semibold text-lg">Sales Prediction Model Evaluation</div>
+            <div class="text-gray-500 text-sm">Confusion matrix analysis using scikit-learn for sales trend prediction accuracy</div>
+        </div>
+    </div>
+</div>
+
 <div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
             <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Accuracy</div>
-            <div class="text-3xl font-bold text-white">95.8%</div>
+            <div class="text-3xl font-bold text-white">{{ accuracy }}%</div>
+            <div class="text-gray-500 text-xs mt-1">Overall correctness</div>
         </div>
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
             <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Precision</div>
-            <div class="text-3xl font-bold text-white">92.7%</div>
+            <div class="text-3xl font-bold text-white">{{ precision }}%</div>
+            <div class="text-gray-500 text-xs mt-1">Positive predictive value</div>
         </div>
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
             <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Recall</div>
-            <div class="text-3xl font-bold text-white">95.0%</div>
+            <div class="text-3xl font-bold text-white">{{ recall }}%</div>
+            <div class="text-gray-500 text-xs mt-1">Sensitivity</div>
         </div>
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
             <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">F1 Score</div>
-            <div class="text-3xl font-bold text-white">93.8%</div>
+            <div class="text-3xl font-bold text-white">{{ f1_score }}%</div>
+            <div class="text-gray-500 text-xs mt-1">Harmonic mean</div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 flex flex-col">
-            <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-4">Confusion Matrix: Actual vs Predicted</div>
+            <div class="mb-4">
+                <div class="text-white font-semibold text-lg mb-1">Confusion Matrix</div>
+                <div class="text-gray-500 text-sm">Predicted vs Actual Sales Increase</div>
+            </div>
             
-            <div class="grid grid-cols-2 gap-2 h-64 flex-1">
-                <div class="bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col items-center justify-center p-4">
-                    <span class="text-teal-400 text-2xl font-bold">800</span>
-                    <span class="text-teal-500/70 text-xs uppercase font-semibold">True Positive</span>
+            <div class="grid grid-cols-2 gap-3 flex-1">
+                <div class="bg-teal-500/10 border-2 border-teal-500/30 rounded-lg flex flex-col items-center justify-center p-6 hover:bg-teal-500/20 transition-colors">
+                    <span class="text-teal-400 text-4xl font-bold mb-2">{{ tp }}</span>
+                    <span class="text-teal-500 text-xs uppercase font-semibold tracking-wider">True Positive</span>
+                    <span class="text-gray-500 text-xs mt-1">Correctly predicted increase</span>
                 </div>
-                <div class="bg-red-500/10 border border-red-500/20 rounded-lg flex flex-col items-center justify-center p-4">
-                    <span class="text-red-400 text-2xl font-bold">20</span>
-                    <span class="text-red-500/70 text-xs uppercase font-semibold">False Negative</span>
+                <div class="bg-red-500/10 border-2 border-red-500/30 rounded-lg flex flex-col items-center justify-center p-6 hover:bg-red-500/20 transition-colors">
+                    <span class="text-red-400 text-4xl font-bold mb-2">{{ fn }}</span>
+                    <span class="text-red-500 text-xs uppercase font-semibold tracking-wider">False Negative</span>
+                    <span class="text-gray-500 text-xs mt-1">Missed actual increase</span>
                 </div>
-                <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg flex flex-col items-center justify-center p-4">
-                    <span class="text-yellow-400 text-2xl font-bold">30</span>
-                    <span class="text-yellow-500/70 text-xs uppercase font-semibold">False Positive</span>
+                <div class="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-lg flex flex-col items-center justify-center p-6 hover:bg-yellow-500/20 transition-colors">
+                    <span class="text-yellow-400 text-4xl font-bold mb-2">{{ fp }}</span>
+                    <span class="text-yellow-500 text-xs uppercase font-semibold tracking-wider">False Positive</span>
+                    <span class="text-gray-500 text-xs mt-1">Incorrectly predicted increase</span>
                 </div>
-                <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg flex flex-col items-center justify-center p-4">
-                    <span class="text-blue-400 text-2xl font-bold">150</span>
-                    <span class="text-blue-500/70 text-xs uppercase font-semibold">True Negative</span>
+                <div class="bg-blue-500/10 border-2 border-blue-500/30 rounded-lg flex flex-col items-center justify-center p-6 hover:bg-blue-500/20 transition-colors">
+                    <span class="text-blue-400 text-4xl font-bold mb-2">{{ tn }}</span>
+                    <span class="text-blue-500 text-xs uppercase font-semibold tracking-wider">True Negative</span>
+                    <span class="text-gray-500 text-xs mt-1">Correctly predicted no increase</span>
                 </div>
             </div>
         </div>
 
         <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
-            <div class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-4">Misclassification Breakdown</div>
+            <div class="mb-4">
+                <div class="text-white font-semibold text-lg mb-1">Error Analysis</div>
+                <div class="text-gray-500 text-sm">Misclassification breakdown</div>
+            </div>
             <div class="relative h-64 w-full">
                 <canvas id="errorChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
+        <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-lightbulb text-yellow-400"></i>
+            <span class="text-white font-semibold">Model Details</span>
+        </div>
+        <div class="space-y-3 text-sm">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-teal-400 mt-1"></i>
+                <div>
+                    <span class="text-gray-300">Prediction Logic:</span>
+                    <span class="text-gray-500"> Comparing current revenue against historical average to predict sales increase</span>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-teal-400 mt-1"></i>
+                <div>
+                    <span class="text-gray-300">Evaluation Method:</span>
+                    <span class="text-gray-500"> scikit-learn confusion_matrix() comparing predicted vs actual outcomes</span>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-teal-400 mt-1"></i>
+                <div>
+                    <span class="text-gray-300">Data Points:</span>
+                    <span class="text-gray-500"> Last 200 sales transactions analyzed</span>
+                </div>
             </div>
         </div>
     </div>
@@ -59,21 +165,37 @@
     new Chart(document.getElementById("errorChart"), {
         type: 'bar',
         data: {
-            labels: ['False Pos', 'False Neg'],
+            labels: ['False Positive', 'False Negative'],
             datasets: [{
-                label: 'Errors',
-                data: [30, 20],
-                backgroundColor: ['#facc15', '#f87171'], // Yellow-400, Red-400
-                borderRadius: 4,
-                barThickness: 50
+                label: 'Count',
+                data: [{{ fp }}, {{ fn }}],
+                backgroundColor: ['#facc15', '#f87171'],
+                borderRadius: 6,
+                barThickness: 60
             }]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Errors: ' + context.parsed.y;
+                        }
+                    }
+                }
+            },
             scales: {
-                y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
-                x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+                y: { 
+                    grid: { color: '#374151' }, 
+                    ticks: { color: '#9ca3af', stepSize: 1 },
+                    beginAtZero: true
+                },
+                x: { 
+                    grid: { display: false }, 
+                    ticks: { color: '#9ca3af', font: { size: 11 } }
+                }
             }
         }
     });
