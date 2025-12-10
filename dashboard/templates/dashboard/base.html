@@ -9,6 +9,54 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     {% tailwind_css %}
+    
+    <style>
+        /* Light mode table text fix */
+        body.bg-gray-50 table td,
+        body.bg-gray-50 table th {
+            color: #1f2937 !important;
+        }
+        
+        /* Light mode card values */
+        body.bg-gray-50 .val-xl {
+            color: #111827 !important;
+        }
+        
+        /* Light mode labels */
+        body.bg-gray-50 .label-sm {
+            color: #6b7280 !important;
+        }
+        
+        /* Light mode sub-captions */
+        body.bg-gray-50 .sub-caption {
+            color: #6b7280 !important;
+        }
+        
+        /* Preserve colored text in light mode */
+        body.bg-gray-50 .text-teal-400,
+        body.bg-gray-50 .text-teal-500,
+        body.bg-gray-50 .text-green-400,
+        body.bg-gray-50 .text-green-500,
+        body.bg-gray-50 .text-red-400,
+        body.bg-gray-50 .text-yellow-400,
+        body.bg-gray-50 .text-pink-400,
+        body.bg-gray-50 .text-purple-400,
+        body.bg-gray-50 .text-blue-400,
+        body.bg-gray-50 .text-orange-400,
+        body.bg-gray-50 .text-cyan-400,
+        body.bg-gray-50 .text-indigo-400 {
+            filter: brightness(0.7) saturate(1.2);
+        }
+        
+        /* Light mode nav items */
+        body.bg-gray-50 nav a.text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        body.bg-gray-50 nav a.text-gray-400:hover {
+            color: #4b5563 !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 min-h-screen flex text-gray-200 font-sans">
 
@@ -224,50 +272,114 @@
         const lightBtn = document.getElementById('light-theme-btn');
         
         if (theme === 'light') {
-            body.classList.remove('bg-gray-900');
-            body.classList.add('bg-gray-100');
+            body.classList.remove('bg-gray-900', 'text-gray-200');
+            body.classList.add('bg-gray-50', 'text-gray-900');
             
-            // Update all dark elements to light
+            // Update sidebar
+            document.querySelector('nav').classList.remove('bg-gray-800');
+            document.querySelector('nav').classList.add('bg-white', 'shadow-xl', 'light-mode');
+            
+            // Update all panels and cards
             document.querySelectorAll('.bg-gray-800').forEach(el => {
                 el.classList.remove('bg-gray-800');
-                el.classList.add('bg-white', 'light-mode');
+                el.classList.add('bg-white', 'shadow-md', 'light-mode');
             });
             
+            // Update all text colors
             document.querySelectorAll('.text-gray-200, .text-white').forEach(el => {
-                el.classList.add('text-gray-800', 'light-mode-text');
+                if (!el.classList.contains('bg-teal-500') && !el.classList.contains('text-teal-400') && !el.classList.contains('text-green-500') && !el.classList.contains('text-red-400') && !el.classList.contains('text-yellow-400') && !el.classList.contains('text-pink-400') && !el.classList.contains('text-purple-400') && !el.classList.contains('text-blue-400') && !el.classList.contains('text-orange-400') && !el.classList.contains('text-cyan-400') && !el.classList.contains('text-indigo-400')) {
+                    el.classList.add('text-gray-900', 'light-mode-text');
+                }
             });
             
+            // Update secondary text
+            document.querySelectorAll('.text-gray-400, .text-gray-500').forEach(el => {
+                el.classList.add('text-gray-600', 'light-mode-secondary');
+            });
+            
+            // Update borders
             document.querySelectorAll('.border-gray-700').forEach(el => {
                 el.classList.remove('border-gray-700');
-                el.classList.add('border-gray-200', 'light-mode');
+                el.classList.add('border-gray-300', 'light-mode-border');
             });
             
+            // Update code blocks
+            document.querySelectorAll('.bg-gray-700').forEach(el => {
+                if (el.tagName === 'CODE') {
+                    el.classList.remove('bg-gray-700');
+                    el.classList.add('bg-gray-200', 'text-gray-800', 'light-mode-code');
+                }
+            });
+            
+            // Update gradient panels to be lighter
+            document.querySelectorAll('[class*="from-"][class*="-900"]').forEach(el => {
+                el.classList.add('light-mode-gradient');
+                el.style.background = 'linear-gradient(to right, rgba(229, 231, 235, 0.5), rgba(243, 244, 246, 0.5))';
+                el.style.borderColor = '#d1d5db';
+            });
+            
+            // Update modal
+            const modal = document.getElementById('settings-modal');
+            if (modal) {
+                modal.querySelector('.bg-gray-800').classList.remove('bg-gray-800');
+                modal.querySelector('.bg-white').classList.add('bg-white', 'light-mode');
+            }
+            
             // Update buttons
-            lightBtn.classList.remove('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
-            lightBtn.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
-            darkBtn.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
-            darkBtn.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            lightBtn?.classList.remove('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            lightBtn?.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-600', 'font-bold');
+            darkBtn?.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            darkBtn?.classList.add('border-gray-300', 'bg-gray-100', 'text-gray-600');
             
             localStorage.setItem('theme', 'light');
         } else {
-            body.classList.remove('bg-gray-100');
-            body.classList.add('bg-gray-900');
+            body.classList.remove('bg-gray-50', 'text-gray-900');
+            body.classList.add('bg-gray-900', 'text-gray-200');
+            
+            // Restore sidebar
+            document.querySelector('nav').classList.remove('bg-white', 'shadow-xl', 'light-mode');
+            document.querySelector('nav').classList.add('bg-gray-800');
             
             // Restore dark elements
             document.querySelectorAll('.light-mode').forEach(el => {
-                el.classList.remove('bg-white', 'border-gray-200', 'light-mode');
-                el.classList.add('bg-gray-800', 'border-gray-700');
+                el.classList.remove('bg-white', 'shadow-md', 'light-mode');
+                el.classList.add('bg-gray-800');
             });
             
+            // Restore text colors
             document.querySelectorAll('.light-mode-text').forEach(el => {
-                el.classList.remove('text-gray-800', 'light-mode-text');
+                el.classList.remove('text-gray-900', 'light-mode-text');
             });
             
-            // Update buttons
-            darkBtn.classList.remove('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
-            darkBtn.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
-            lightBtn.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
-            lightBtn.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
+            // Restore secondary text
+            document.querySelectorAll('.light-mode-secondary').forEach(el => {
+                el.classList.remove('text-gray-600', 'light-mode-secondary');
+            });
+            
+            // Restore borders
+            document.querySelectorAll('.light-mode-border').forEach(el => {
+                el.classList.remove('border-gray-300', 'light-mode-border');
+                el.classList.add('border-gray-700');
+            });
+            
+            // Restore code blocks
+            document.querySelectorAll('.light-mode-code').forEach(el => {
+                el.classList.remove('bg-gray-200', 'text-gray-800', 'light-mode-code');
+                el.classList.add('bg-gray-700');
+            });
+            
+            // Restore gradients
+            document.querySelectorAll('.light-mode-gradient').forEach(el => {
+                el.classList.remove('light-mode-gradient');
+                el.style.background = '';
+                el.style.borderColor = '';
+            });
+            
+            // Restore buttons
+            darkBtn?.classList.remove('border-gray-300', 'bg-gray-100', 'text-gray-600');
+            darkBtn?.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-400');
+            lightBtn?.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-600', 'font-bold');
+            lightBtn?.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
             
             localStorage.setItem('theme', 'dark');
         }
