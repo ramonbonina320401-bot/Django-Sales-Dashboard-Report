@@ -1,0 +1,212 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Product Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Product Management</h1>
+            <p class="text-gray-400 mt-2">Manage your products, prices, and inventory</p>
+        </div>
+        <a href="{% url 'product_create' %}" class="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Total Products</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ page_obj.paginator.count }}</p>
+                </div>
+                <i class="fas fa-box text-teal-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Categories</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ categories|length }}</p>
+                </div>
+                <i class="fas fa-tags text-blue-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Avg Profit Margin</p>
+                    <p class="text-3xl font-bold text-green-400 mt-2">28.5%</p>
+                </div>
+                <i class="fas fa-chart-pie text-green-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Total Sales</p>
+                    <p class="text-3xl font-bold text-white mt-2">1,234</p>
+                </div>
+                <i class="fas fa-shopping-cart text-purple-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700/50 p-6">
+        <form method="GET" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Search -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Search Product</label>
+                    <input type="text" name="search" value="{{ search }}" placeholder="Search by name..." 
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500">
+                </div>
+
+                <!-- Category Filter -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Category</label>
+                    <select name="category" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Sort -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Sort By</label>
+                    <select name="sort" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500">
+                        <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                        <option value="-price" {% if sort_by == '-price' %}selected{% endif %}>Price (High to Low)</option>
+                        <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price (Low to High)</option>
+                        <option value="category" {% if sort_by == 'category' %}selected{% endif %}>Category</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                    <a href="{% url 'product_list' %}" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors text-center">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Products Table -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700/50 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-700/50 border-b border-gray-700">
+                        <th class="px-6 py-4 text-left text-gray-300 font-semibold">Product Name</th>
+                        <th class="px-6 py-4 text-left text-gray-300 font-semibold">Category</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Unit Price</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Unit Cost</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Margin</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Sales</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Revenue</th>
+                        <th class="px-6 py-4 text-center text-gray-300 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in page_obj %}
+                    <tr class="border-b border-gray-700 hover:bg-gray-700/30 transition-colors">
+                        <td class="px-6 py-4 text-white font-medium">{{ item.product.name }}</td>
+                        <td class="px-6 py-4 text-gray-300">
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">{{ item.product.category }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right text-white">${{ item.product.price }}</td>
+                        <td class="px-6 py-4 text-right text-gray-400">${{ item.product.cost }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold
+                                {% if item.margin|floatformat:0|add:'0' >= 30 %}bg-green-500/20 text-green-300
+                                {% elif item.margin|floatformat:0|add:'0' >= 15 %}bg-yellow-500/20 text-yellow-300
+                                {% else %}bg-red-500/20 text-red-300{% endif %}">
+                                {{ item.margin }}%
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right text-gray-300">{{ item.sales_count }}</td>
+                        <td class="px-6 py-4 text-right text-teal-400 font-medium">${{ item.total_revenue|floatformat:2 }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'product_edit' item.product.pk %}" class="px-3 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-colors" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'product_delete' item.product.pk %}" class="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="px-6 py-12 text-center text-gray-400">
+                            <i class="fas fa-inbox text-4xl mb-4"></i>
+                            <p class="mt-2">No products found. Create one to get started!</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex items-center justify-center gap-2">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{{ request.GET.urlencode }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                <i class="fas fa-chevron-left"></i> First
+            </a>
+            <a href="?page={{ page_obj.previous_page_number }}{{ request.GET.urlencode }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                Previous
+            </a>
+        {% endif %}
+
+        <div class="flex items-center gap-1">
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="px-4 py-2 bg-teal-500 text-white rounded-lg font-semibold">{{ num }}</span>
+                {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                    <a href="?page={{ num }}{{ request.GET.urlencode }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{{ request.GET.urlencode }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                Next
+            </a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{{ request.GET.urlencode }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                Last <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<script>
+    setTimeout(function() {
+        var alert = document.querySelector('[data-alert]');
+        if (alert) alert.remove();
+    }, 5000);
+</script>
+{% endfor %}
+{% endif %}
+{% endblock %}

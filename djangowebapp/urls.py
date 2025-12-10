@@ -13,7 +13,8 @@ urlpatterns = [
 
     # 3. Explicit Logout 
     # We define this here so {% url 'logout' %} works globally.
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # NEXT_PAGE redirects to login after logout
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     # 4. The Dashboard (Home Page)
     # We place this at the bottom to handle the root URL ''.

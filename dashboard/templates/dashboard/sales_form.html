@@ -1,0 +1,250 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <!-- Header -->
+    <div>
+        <h1 class="text-3xl font-bold text-white">{{ title }}</h1>
+        <p class="text-gray-400 mt-2">
+            {% if is_create %}
+            Record a new sale transaction (can be past dates for historical data)
+            {% else %}
+            Update sale details and auto-calculations will update
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700/50 p-8">
+        <form method="POST" id="sales-form" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+            <div class="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Product Selection -->
+            <div>
+                <label class="block text-gray-300 text-sm font-semibold mb-2">
+                    Product <span class="text-red-400">*</span>
+                </label>
+                {{ form.product }}
+                <p class="text-gray-400 text-xs mt-1">Select product to record sale for</p>
+                {% if form.product.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.product.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Date Selection -->
+            <div>
+                <label class="block text-gray-300 text-sm font-semibold mb-2">
+                    Sale Date <span class="text-red-400">*</span>
+                </label>
+                {{ form.date }}
+                <p class="text-gray-400 text-xs mt-1">You can enter past dates for historical sales data</p>
+                {% if form.date.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.date.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <label class="block text-gray-300 text-sm font-semibold mb-2">
+                    Quantity Sold <span class="text-red-400">*</span>
+                </label>
+                {{ form.quantity }}
+                {% if form.quantity.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.quantity.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Product Info Section (fetched via JavaScript) -->
+            <div id="product-info" class="bg-gray-700/50 rounded-lg p-4 hidden">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase">Unit Price</p>
+                        <p class="text-white font-semibold mt-1" id="unit-price">-</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase">Unit Cost</p>
+                        <p class="text-white font-semibold mt-1" id="unit-cost">-</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase">Profit per Unit</p>
+                        <p class="text-teal-400 font-semibold mt-1" id="profit-per-unit">-</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase">Profit Margin</p>
+                        <p class="text-teal-400 font-semibold mt-1" id="profit-margin">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto-Calculations Section -->
+            <div class="border-t border-gray-700 pt-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Auto-Calculated Values</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Total Revenue -->
+                    <div class="bg-gray-700/50 rounded-lg p-4">
+                        <p class="text-gray-400 text-xs uppercase">Total Revenue</p>
+                        <p class="text-3xl font-bold text-teal-400 mt-2" id="total-revenue">$0.00</p>
+                        <p class="text-gray-500 text-xs mt-2">Qty × Unit Price</p>
+                    </div>
+
+                    <!-- Total Cost -->
+                    <div class="bg-gray-700/50 rounded-lg p-4">
+                        <p class="text-gray-400 text-xs uppercase">Total Cost</p>
+                        <p class="text-3xl font-bold text-gray-400 mt-2" id="total-cost">$0.00</p>
+                        <p class="text-gray-500 text-xs mt-2">Qty × Unit Cost</p>
+                    </div>
+
+                    <!-- Total Profit -->
+                    <div class="bg-gray-700/50 rounded-lg p-4">
+                        <p class="text-gray-400 text-xs uppercase">Total Profit</p>
+                        <p class="text-3xl font-bold text-green-400 mt-2" id="total-profit">$0.00</p>
+                        <p class="text-gray-500 text-xs mt-2">Revenue - Cost</p>
+                    </div>
+
+                    <!-- Profit Margin % -->
+                    <div class="bg-gray-700/50 rounded-lg p-4">
+                        <p class="text-gray-400 text-xs uppercase">Profit Margin %</p>
+                        <p class="text-3xl font-bold text-blue-400 mt-2" id="total-margin">0%</p>
+                        <p class="text-gray-500 text-xs mt-2">(Profit / Revenue) × 100</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="bg-teal-500/10 border border-teal-500/20 rounded-lg p-4">
+                <p class="text-teal-300 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    All revenue, cost, and profit values are automatically calculated based on your product's unit price and cost. Just enter the quantity!
+                </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-3 pt-6 border-t border-gray-700">
+                <button type="submit" class="flex-1 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-check"></i> {{ button_text }}
+                </button>
+                <a href="{% url 'sales_list' %}" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Real-time Calculation Script -->
+<script>
+// Product data will be stored here when fetched from Django
+const productData = {};
+
+// Fetch product data on form load
+document.addEventListener('DOMContentLoaded', function() {
+    const productSelect = document.querySelector('select[name="product"]');
+    const quantityInput = document.querySelector('input[name="quantity"]');
+    const productInfo = document.getElementById('product-info');
+
+    // Get all product data from options
+    Array.from(productSelect.options).forEach(option => {
+        if (option.value) {
+            // Parse product info from the option's text or data attribute
+            // We'll fetch this dynamically
+            productData[option.value] = {
+                name: option.text,
+                price: 0,
+                cost: 0
+            };
+        }
+    });
+
+    // Fetch product prices via AJAX
+    function fetchProductData() {
+        const productId = productSelect.value;
+        if (productId) {
+            fetch(`/api/product/${productId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    productData[productId] = data;
+                    updateCalculations();
+                    showProductInfo();
+                })
+                .catch(() => {
+                    // Fallback: try to parse from Django template data
+                    updateCalculations();
+                });
+        }
+    }
+
+    function showProductInfo() {
+        const productId = productSelect.value;
+        if (productId && productData[productId]) {
+            const data = productData[productId];
+            document.getElementById('unit-price').textContent = '$' + parseFloat(data.price).toFixed(2);
+            document.getElementById('unit-cost').textContent = '$' + parseFloat(data.cost).toFixed(2);
+            const profitPerUnit = data.price - data.cost;
+            const margin = data.price > 0 ? (profitPerUnit / data.price * 100) : 0;
+            document.getElementById('profit-per-unit').textContent = '$' + profitPerUnit.toFixed(2);
+            document.getElementById('profit-margin').textContent = margin.toFixed(1) + '%';
+            document.getElementById('product-info').classList.remove('hidden');
+        }
+    }
+
+    function updateCalculations() {
+        const productId = productSelect.value;
+        const quantity = parseFloat(quantityInput.value) || 0;
+
+        if (productId && productData[productId]) {
+            const price = parseFloat(productData[productId].price) || 0;
+            const cost = parseFloat(productData[productId].cost) || 0;
+            
+            const totalRevenue = quantity * price;
+            const totalCost = quantity * cost;
+            const totalProfit = totalRevenue - totalCost;
+            const marginPercent = totalRevenue > 0 ? (totalProfit / totalRevenue * 100) : 0;
+
+            // Update display
+            document.getElementById('total-revenue').textContent = '$' + totalRevenue.toFixed(2);
+            document.getElementById('total-cost').textContent = '$' + totalCost.toFixed(2);
+            
+            // Color code profit
+            const profitElement = document.getElementById('total-profit');
+            profitElement.textContent = '$' + totalProfit.toFixed(2);
+            if (totalProfit >= 0) {
+                profitElement.className = 'text-3xl font-bold text-green-400 mt-2';
+            } else {
+                profitElement.className = 'text-3xl font-bold text-red-400 mt-2';
+            }
+
+            // Color code margin
+            const marginElement = document.getElementById('total-margin');
+            marginElement.textContent = marginPercent.toFixed(1) + '%';
+            if (marginPercent >= 30) {
+                marginElement.className = 'text-3xl font-bold text-green-400 mt-2';
+            } else if (marginPercent >= 15) {
+                marginElement.className = 'text-3xl font-bold text-yellow-400 mt-2';
+            } else {
+                marginElement.className = 'text-3xl font-bold text-red-400 mt-2';
+            }
+        }
+    }
+
+    productSelect.addEventListener('change', fetchProductData);
+    quantityInput.addEventListener('input', updateCalculations);
+    
+    // Initial load
+    if (productSelect.value) {
+        fetchProductData();
+    }
+});
+</script>
+{% endblock %}

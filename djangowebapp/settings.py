@@ -134,3 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = 'sales'
+
+# Allow GET requests for logout (Django 5.0+ requires this for link-based logout)
+LOGOUT_ALLOWED_HOSTS = ['*']

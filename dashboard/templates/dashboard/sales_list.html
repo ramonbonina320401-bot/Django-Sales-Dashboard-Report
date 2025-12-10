@@ -1,0 +1,214 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Sales Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Sales Management</h1>
+            <p class="text-gray-400 mt-2">Record and manage all sales transactions</p>
+        </div>
+        <a href="{% url 'sales_create' %}" class="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold flex items-center gap-2 transition-colors">
+            <i class="fas fa-plus"></i> Record New Sale
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Total Sales Records</p>
+                    <p class="text-3xl font-bold text-white mt-2">{{ sales_count }}</p>
+                </div>
+                <i class="fas fa-receipt text-teal-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Total Revenue</p>
+                    <p class="text-3xl font-bold text-teal-400 mt-2">${{ total_revenue }}</p>
+                </div>
+                <i class="fas fa-dollar-sign text-green-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Total Profit</p>
+                    <p class="text-3xl font-bold text-green-400 mt-2">${{ total_profit }}</p>
+                </div>
+                <i class="fas fa-chart-line text-green-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm">Avg Profit Margin</p>
+                    <p class="text-3xl font-bold text-blue-400 mt-2">{{ avg_margin }}%</p>
+                </div>
+                <i class="fas fa-percent text-blue-500 text-4xl opacity-20"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700/50 p-6">
+        <form method="GET" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <!-- Search -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Search Product</label>
+                    <input type="text" name="search" value="{{ search }}" placeholder="Product name..." 
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500">
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Category</label>
+                    <select name="category" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">From</label>
+                    <input type="date" name="start_date" value="{{ start_date }}" 
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500">
+                </div>
+
+                <!-- End Date -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">To</label>
+                    <input type="date" name="end_date" value="{{ end_date }}" 
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500">
+                </div>
+
+                <!-- Min Profit -->
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Min Profit ($)</label>
+                    <input type="number" name="min_profit" value="{{ min_profit }}" placeholder="0.00" step="0.01"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" class="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <a href="{% url 'sales_list' %}" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sales Table -->
+    <div class="bg-gray-800 rounded-xl border border-gray-700/50 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-700/50 border-b border-gray-700">
+                        <th class="px-6 py-4 text-left text-gray-300 font-semibold">Date</th>
+                        <th class="px-6 py-4 text-left text-gray-300 font-semibold">Product</th>
+                        <th class="px-6 py-4 text-left text-gray-300 font-semibold">Category</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Qty</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Unit Price</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Revenue</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Cost</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Profit</th>
+                        <th class="px-6 py-4 text-right text-gray-300 font-semibold">Margin</th>
+                        <th class="px-6 py-4 text-center text-gray-300 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in page_obj %}
+                    {% widthratio sale.profit sale.revenue 100 as profit_margin %}
+                    <tr class="border-b border-gray-700 hover:bg-gray-700/30 transition-colors">
+                        <td class="px-6 py-4 text-white font-medium">{{ sale.date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 text-white">{{ sale.product.name }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">{{ sale.product.category }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right text-gray-300">{{ sale.quantity }}</td>
+                        <td class="px-6 py-4 text-right text-gray-300">${{ sale.product.price }}</td>
+                        <td class="px-6 py-4 text-right text-teal-400 font-medium">${{ sale.revenue }}</td>
+                        <td class="px-6 py-4 text-right text-gray-400">${{ sale.cost }}</td>
+                        <td class="px-6 py-4 text-right font-semibold">
+                            {% if sale.profit >= 0 %}
+                                <span class="text-green-400">${{ sale.profit }}</span>
+                            {% else %}
+                                <span class="text-red-400">${{ sale.profit }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold
+                                {% if profit_margin >= 30 %}bg-green-500/20 text-green-300
+                                {% elif profit_margin >= 15 %}bg-yellow-500/20 text-yellow-300
+                                {% else %}bg-red-500/20 text-red-300{% endif %}">
+                                {{ profit_margin|floatformat:1 }}%
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'sales_edit' sale.pk %}" class="px-3 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-colors" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'sales_delete' sale.pk %}" class="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="px-6 py-12 text-center text-gray-400">
+                            <i class="fas fa-inbox text-4xl mb-4"></i>
+                            <p class="mt-2">No sales records found. Start recording sales!</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex items-center justify-center gap-2">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                <i class="fas fa-chevron-left"></i> First
+            </a>
+        {% endif %}
+
+        <div class="flex items-center gap-1">
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="px-4 py-2 bg-teal-500 text-white rounded-lg font-semibold">{{ num }}</span>
+                {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                    <a href="?page={{ num }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                Next
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

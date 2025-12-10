@@ -10,51 +10,301 @@
     
     {% tailwind_css %}
     
+    <script>
+        // CRITICAL: Apply theme before body renders
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                // Add to HTML element immediately
+                document.documentElement.classList.add('light-mode-active');
+                
+                // Also modify body as soon as it exists
+                const observer = new MutationObserver(function(mutations, obs) {
+                    const body = document.body;
+                    if (body) {
+                        body.classList.remove('bg-gray-900', 'text-gray-200');
+                        body.classList.add('bg-gray-50', 'text-gray-900');
+                        obs.disconnect();
+                    }
+                });
+                observer.observe(document.documentElement, { childList: true });
+            }
+        })();
+    </script>
+    
     <style>
-        /* Light mode table text fix */
-        body.bg-gray-50 table td,
-        body.bg-gray-50 table th {
-            color: #1f2937 !important;
-        }
-        
-        /* Light mode card values */
-        body.bg-gray-50 .val-xl {
+        /* Force light mode when active */
+        html.light-mode-active body {
+            background-color: #f9fafb !important;
             color: #111827 !important;
         }
         
-        /* Light mode labels */
-        body.bg-gray-50 .label-sm {
+        html.light-mode-active nav {
+            background-color: #ffffff !important;
+            border-right: 1px solid #e5e7eb !important;
+        }
+        
+        html.light-mode-active .bg-gray-800 {
+            background-color: #ffffff !important;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+        }
+        
+        html.light-mode-active .text-white,
+        html.light-mode-active .text-gray-200 {
+            color: #111827 !important;
+        }
+        
+        html.light-mode-active .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        /* Light mode comprehensive fixes */
+        body.bg-gray-50,
+        body.bg-gray-50 * {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        
+        /* ========== BACKGROUNDS ========== */
+        /* Main backgrounds */
+        body.bg-gray-50 .bg-gray-800,
+        body.bg-gray-50 .bg-gray-900 {
+            background-color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 .bg-gray-800\/50,
+        body.bg-gray-50 .bg-gray-700 {
+            background-color: #f9fafb !important;
+        }
+        
+        body.bg-gray-50 .bg-gray-700\/50 {
+            background-color: #f3f4f6 !important;
+        }
+        
+        /* Header and nav */
+        body.bg-gray-50 header {
+            background-color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 nav {
+            background-color: #ffffff !important;
+            border-right: 1px solid #e5e7eb !important;
+        }
+        
+        /* ========== BORDERS ========== */
+        body.bg-gray-50 .border-gray-700,
+        body.bg-gray-50 .border-gray-700\/50 {
+            border-color: #d1d5db !important;
+        }
+        
+        body.bg-gray-50 .border-gray-600 {
+            border-color: #d1d5db !important;
+        }
+        
+        /* ========== TEXT COLORS ========== */
+        /* Primary text */
+        body.bg-gray-50 .text-white,
+        body.bg-gray-50 .text-gray-200,
+        body.bg-gray-50 .text-gray-300 {
+            color: #111827 !important;
+        }
+        
+        /* Secondary text */
+        body.bg-gray-50 .text-gray-400,
+        body.bg-gray-50 .text-gray-500 {
             color: #6b7280 !important;
         }
         
-        /* Light mode sub-captions */
+        /* All headings */
+        body.bg-gray-50 h1,
+        body.bg-gray-50 h2,
+        body.bg-gray-50 h3,
+        body.bg-gray-50 h4,
+        body.bg-gray-50 h5,
+        body.bg-gray-50 h6 {
+            color: #111827 !important;
+        }
+        
+        /* Paragraph and list text */
+        body.bg-gray-50 p,
+        body.bg-gray-50 ul li,
+        body.bg-gray-50 ol li,
+        body.bg-gray-50 span {
+            color: #374151 !important;
+        }
+        
+        /* Table text */
+        body.bg-gray-50 table,
+        body.bg-gray-50 table td,
+        body.bg-gray-50 table th {
+            color: #111827 !important;
+        }
+        
+        /* Labels and captions */
+        body.bg-gray-50 label,
+        body.bg-gray-50 .label-sm,
         body.bg-gray-50 .sub-caption {
-            color: #6b7280 !important;
+            color: #4b5563 !important;
         }
         
-        /* Preserve colored text in light mode */
-        body.bg-gray-50 .text-teal-400,
-        body.bg-gray-50 .text-teal-500,
-        body.bg-gray-50 .text-green-400,
-        body.bg-gray-50 .text-green-500,
-        body.bg-gray-50 .text-red-400,
-        body.bg-gray-50 .text-yellow-400,
-        body.bg-gray-50 .text-pink-400,
-        body.bg-gray-50 .text-purple-400,
-        body.bg-gray-50 .text-blue-400,
-        body.bg-gray-50 .text-orange-400,
-        body.bg-gray-50 .text-cyan-400,
-        body.bg-gray-50 .text-indigo-400 {
-            filter: brightness(0.7) saturate(1.2);
+        /* ========== FORM INPUTS ========== */
+        body.bg-gray-50 input,
+        body.bg-gray-50 select,
+        body.bg-gray-50 textarea {
+            background-color: #ffffff !important;
+            border-color: #d1d5db !important;
+            color: #111827 !important;
         }
         
-        /* Light mode nav items */
-        body.bg-gray-50 nav a.text-gray-400 {
+        body.bg-gray-50 input::placeholder,
+        body.bg-gray-50 textarea::placeholder {
             color: #9ca3af !important;
         }
         
-        body.bg-gray-50 nav a.text-gray-400:hover {
-            color: #4b5563 !important;
+        body.bg-gray-50 input:focus,
+        body.bg-gray-50 select:focus,
+        body.bg-gray-50 textarea:focus {
+            border-color: #0d9488 !important;
+        }
+        
+        /* ========== BUTTONS ========== */
+        body.bg-gray-50 button:not(.bg-teal-500):not(.bg-red-500):not(.bg-blue-500):not(.bg-green-500),
+        body.bg-gray-50 a.filter-btn:not(.active) {
+            background-color: #f3f4f6 !important;
+            color: #374151 !important;
+            border-color: #d1d5db !important;
+        }
+        
+        body.bg-gray-50 button:not(.bg-teal-500):hover {
+            background-color: #e5e7eb !important;
+        }
+        
+        /* ========== NAV LINKS ========== */
+        body.bg-gray-50 nav a:not(.bg-teal-500) {
+            color: #6b7280 !important;
+        }
+        
+        body.bg-gray-50 nav a:not(.bg-teal-500):hover {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+        
+        /* Active nav items keep their teal color */
+        body.bg-gray-50 nav a.bg-teal-500,
+        body.bg-gray-50 .bg-teal-500 {
+            color: #ffffff !important;
+        }
+        
+        /* ========== COLORED TEXT (preserve) ========== */
+        body.bg-gray-50 .text-teal-400,
+        body.bg-gray-50 .text-teal-500 {
+            color: #0d9488 !important;
+        }
+        
+        body.bg-gray-50 .text-green-400,
+        body.bg-gray-50 .text-green-500 {
+            color: #16a34a !important;
+        }
+        
+        body.bg-gray-50 .text-red-400,
+        body.bg-gray-50 .text-red-500 {
+            color: #dc2626 !important;
+        }
+        
+        body.bg-gray-50 .text-yellow-400 {
+            color: #ca8a04 !important;
+        }
+        
+        body.bg-gray-50 .text-blue-400,
+        body.bg-gray-50 .text-blue-500 {
+            color: #2563eb !important;
+        }
+        
+        body.bg-gray-50 .text-orange-400 {
+            color: #ea580c !important;
+        }
+        
+        body.bg-gray-50 .text-purple-400 {
+            color: #9333ea !important;
+        }
+        
+        body.bg-gray-50 .text-pink-400 {
+            color: #db2777 !important;
+        }
+        
+        body.bg-gray-50 .text-cyan-400 {
+            color: #0891b2 !important;
+        }
+        
+        body.bg-gray-50 .text-indigo-400 {
+            color: #6366f1 !important;
+        }
+        
+        body.bg-gray-50 .text-amber-400 {
+            color: #d97706 !important;
+        }
+        
+        /* ========== SPECIAL ELEMENTS ========== */
+        /* User profile section - preserve visibility */
+        #user-menu-button {
+            color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 #user-menu-button {
+            color: #111827 !important;
+        }
+        
+        #user-menu-button .font-semibold {
+            color: inherit !important;
+        }
+        
+        #user-menu-button .text-xs {
+            opacity: 0.7;
+        }
+        
+        body.bg-gray-50 #user-menu-button img {
+            border-color: #0d9488 !important;
+        }
+        
+        /* User menu dropdown text */
+        body.bg-gray-50 #user-menu .text-white {
+            color: #111827 !important;
+        }
+        
+        body.bg-gray-50 #user-menu .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        
+        body.bg-gray-50 #user-menu .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        /* Code blocks */
+        body.bg-gray-50 code {
+            background-color: #e5e7eb !important;
+            color: #1f2937 !important;
+        }
+        
+        /* Gradients */
+        body.bg-gray-50 [class*="from-"][class*="-900"],
+        body.bg-gray-50 [class*="from-"][class*="-800"] {
+            background: linear-gradient(to right, #f3f4f6, #e5e7eb) !important;
+        }
+        
+        /* Settings modal */
+        body.bg-gray-50 #settings-modal .bg-gray-800 {
+            background-color: #ffffff !important;
+        }
+        
+        /* User menu dropdown */
+        body.bg-gray-50 #user-menu {
+            background-color: #ffffff !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Icons - ensure visibility */
+        body.bg-gray-50 i.fa,
+        body.bg-gray-50 i.fas,
+        body.bg-gray-50 i.far {
+            opacity: 0.85;
         }
     </style>
 </head>
@@ -81,6 +331,21 @@
             <a href="{% url 'eval' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
                 {% if active_page == 'eval' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
                 <i class="fas fa-sliders-h text-xl"></i>
+            </a>
+            
+            <!-- Divider -->
+            <div class="w-8 h-px bg-gray-700 my-2"></div>
+            
+            <!-- Management -->
+            <a href="{% url 'product_list' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'products' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}"
+                title="Product Management">
+                <i class="fas fa-box text-xl"></i>
+            </a>
+            <a href="{% url 'sales_list' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                {% if active_page == 'sales' and request.path|slice:"0:6" == '/sales' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}"
+                title="Sales Management">
+                <i class="fas fa-receipt text-xl"></i>
             </a>
         </div>
     </nav>
@@ -180,11 +445,17 @@
         <!-- Profile Dropdown -->
         <div class="relative">
             <button id="user-menu-button" onclick="toggleProfileMenu()" class="flex items-center space-x-3 focus:outline-none bg-transparent hover:bg-gray-800 p-2 rounded-lg transition-colors duration-200">
-                <div class="text-right hidden md:block">
-                    <div class="font-semibold text-gray-100 text-sm">{{ user.username|default:"Nonong Cruz" }}</div>
-                    <div class="text-xs text-gray-400">Admin</div>
+                <div class="text-right">
+                    <div class="font-semibold text-sm" style="color: inherit;">
+                        {% if user.first_name %}
+                            {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </div>
+                    <div class="text-xs opacity-70">User</div>
                 </div>
-                <img src="https://ui-avatars.com/api/?name={{ user.username|default:'Nonong+Cruz' }}&background=00c2a2&color=fff" 
+                <img src="https://ui-avatars.com/api/?name={% if user.first_name %}{{ user.first_name }}+{{ user.last_name }}{% else %}{{ user.username }}{% endif %}&background=00c2a2&color=fff" 
                      class="h-10 w-10 rounded-full border-2 border-teal-500" alt="User">
                 <i class="fas fa-chevron-down text-gray-500 text-xs ml-2 transition-transform duration-200" id="menu-arrow"></i>
             </button>
@@ -193,10 +464,17 @@
                 <div class="py-1">
                     <div class="px-4 py-2 border-b border-gray-700/50">
                         <p class="text-sm text-white font-medium">Signed in as</p>
-                        <p class="text-xs text-gray-400 truncate">{{ user.username|default:"Admin" }}</p>
+                        <p class="text-xs text-gray-400 truncate">
+                            {% if user.first_name %}
+                                {{ user.first_name }} {{ user.last_name }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                        </p>
+                        <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
                     </div>
                     
-                    <form action="{% url 'logout' %}" method="post" class="w-full">
+                    <form method="post" action="{% url 'logout' %}" class="m-0">
                         {% csrf_token %}
                         <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors flex items-center gap-2">
                             <i class="fas fa-sign-out-alt"></i> Sign out
@@ -267,17 +545,25 @@
 
     // Theme Management
     function setTheme(theme) {
+        console.log('setTheme called with:', theme);
         const body = document.body;
-        const darkBtn = document.getElementById('dark-theme-btn');
         const lightBtn = document.getElementById('light-theme-btn');
+        const darkBtn = document.getElementById('dark-theme-btn');
         
         if (theme === 'light') {
+            console.log('Setting light mode...');
+            // Add to HTML element for CSS cascade
+            document.documentElement.classList.add('light-mode-active');
+            
             body.classList.remove('bg-gray-900', 'text-gray-200');
             body.classList.add('bg-gray-50', 'text-gray-900');
             
             // Update sidebar
-            document.querySelector('nav').classList.remove('bg-gray-800');
-            document.querySelector('nav').classList.add('bg-white', 'shadow-xl', 'light-mode');
+            const nav = document.querySelector('nav');
+            if (nav) {
+                nav.classList.remove('bg-gray-800');
+                nav.classList.add('bg-white', 'shadow-xl', 'border-r', 'border-gray-200', 'light-mode');
+            }
             
             // Update all panels and cards
             document.querySelectorAll('.bg-gray-800').forEach(el => {
@@ -321,8 +607,11 @@
             // Update modal
             const modal = document.getElementById('settings-modal');
             if (modal) {
-                modal.querySelector('.bg-gray-800').classList.remove('bg-gray-800');
-                modal.querySelector('.bg-white').classList.add('bg-white', 'light-mode');
+                const modalContent = modal.querySelector('.bg-gray-800');
+                if (modalContent) {
+                    modalContent.classList.remove('bg-gray-800');
+                    modalContent.classList.add('bg-white', 'light-mode');
+                }
             }
             
             // Update buttons
@@ -332,13 +621,21 @@
             darkBtn?.classList.add('border-gray-300', 'bg-gray-100', 'text-gray-600');
             
             localStorage.setItem('theme', 'light');
+            console.log('localStorage theme set to:', localStorage.getItem('theme'));
+            document.documentElement.setAttribute('data-theme', 'light');
         } else {
+            // Remove from HTML element
+            document.documentElement.classList.remove('light-mode-active');
+            
             body.classList.remove('bg-gray-50', 'text-gray-900');
             body.classList.add('bg-gray-900', 'text-gray-200');
             
             // Restore sidebar
-            document.querySelector('nav').classList.remove('bg-white', 'shadow-xl', 'light-mode');
-            document.querySelector('nav').classList.add('bg-gray-800');
+            const nav = document.querySelector('nav');
+            if (nav) {
+                nav.classList.remove('bg-white', 'shadow-xl', 'border-r', 'border-gray-200', 'light-mode');
+                nav.classList.add('bg-gray-800');
+            }
             
             // Restore dark elements
             document.querySelectorAll('.light-mode').forEach(el => {
@@ -382,13 +679,30 @@
             lightBtn?.classList.add('border-gray-600', 'bg-gray-700/50', 'text-gray-400');
             
             localStorage.setItem('theme', 'dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
         }
     }
 
-    // Load saved theme on page load
+    // Apply saved theme on every page load - MULTIPLE CHECKS
+    (function applyThemeImmediately() {
+        const savedTheme = localStorage.getItem('theme');
+        const dataTheme = document.documentElement.getAttribute('data-theme');
+        console.log('Page loaded - Stored theme:', savedTheme, 'Data attr:', dataTheme);
+        
+        if (savedTheme === 'light' || dataTheme === 'light') {
+            console.log('Applying light theme NOW');
+            setTimeout(function() {
+                setTheme('light');
+            }, 10);
+        }
+    })();
+    
+    // Also check when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme');
+        console.log('DOM Ready - Stored theme:', savedTheme);
         if (savedTheme === 'light') {
+            console.log('Re-applying light theme after DOM load');
             setTheme('light');
         }
     });

@@ -1,95 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
-<!-- OOP Implementation Panel -->
-<div class="bg-gradient-to-r from-amber-900/20 to-orange-900/20 border border-amber-500/30 rounded-xl p-4 mb-4">
-    <div class="flex items-start gap-3">
-        <div class="bg-amber-500/20 p-2 rounded-lg">
-            <i class="fas fa-code text-amber-400 text-xl"></i>
-        </div>
-        <div class="flex-1">
-            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
-                <i class="fas fa-sitemap text-sm text-amber-400"></i>
-                Object-Oriented Programming (OOP) with Inheritance
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-yellow-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-layer-group text-xs"></i> Parent Class
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <code class="bg-gray-700 px-1 rounded">GenericReport</code> - Base class</li>
-                        <li>• Common methods: get_title(), get_timestamp()</li>
-                        <li>• Abstract: fetch_data(), process_data()</li>
-                        <li>• Promotes code reusability</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-green-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-code-branch text-xs"></i> Child Classes
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <code class="bg-gray-700 px-1 rounded">SalesReport</code> - Statistics</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">MarketShareReport</code> - This module</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">PredictionReport</code> - ML forecasts</li>
-                        <li>• Each extends GenericReport</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-recycle text-xs"></i> Benefits
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <strong>Inheritance:</strong> super().__init__()</li>
-                        <li>• <strong>Encapsulation:</strong> Data + methods</li>
-                        <li>• <strong>Polymorphism:</strong> Method overriding</li>
-                        <li>• <strong>Reusability:</strong> DRY principle</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Lesson Summary Panel -->
-<div class="bg-gradient-to-r from-green-900/20 to-teal-900/20 border border-green-500/30 rounded-xl p-4 mb-6">
-    <div class="flex items-start gap-3">
-        <div class="bg-green-500/20 p-2 rounded-lg">
-            <i class="fas fa-graduation-cap text-green-400 text-xl"></i>
-        </div>
-        <div class="flex-1">
-            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
-                <i class="fas fa-book-open text-sm text-green-400"></i>
-                Module 2: Market Shares - Matplotlib Visualization & Data Aggregation
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-chart-pie text-xs"></i> Matplotlib Charts
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <code class="bg-gray-700 px-1 rounded">Donut Chart</code> - Market share %</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">Bar Chart</code> - Revenue comparison</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">plt.pie()</code> style visualization</li>
-                        <li>• Color-coded product categories</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-database text-xs"></i> Data Aggregation
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• SQL <code class="bg-gray-700 px-1 rounded">GROUP BY</code> product</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">SUM(revenue)</code> aggregation</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">ORDER BY</code> top sellers</li>
-                        <li>• Performance ranking analysis</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
     <div class="flex items-center gap-3 mb-4">
         <div class="bg-blue-500/10 p-2 rounded-lg text-blue-400">
@@ -97,7 +8,7 @@
         </div>
         <div>
             <div class="text-white font-semibold text-lg">Product Performance Analysis</div>
-            <div class="text-gray-500 text-sm">Sales breakdown by product category using Matplotlib visualization techniques</div>
+            <div class="text-gray-500 text-sm">Sales breakdown by product category</div>
         </div>
     </div>
 </div>
@@ -157,8 +68,19 @@
                                 {% widthratio product.total_sales total_revenue 100 as share_width %}
                                 <div class="bg-teal-500 h-2 rounded-full" style="width: {{ share_width }}%"></div>
                             </div>
-                            <span class="text-teal-400 text-sm font-medium w-12 text-right">
-                                {% widthratio product.total_sales total_revenue 100 %}%
+                            <span class="text-teal-400 text-sm font-medium w-16 text-right">
+                                {% if product.total_sales > 0 %}
+                                    {% widthratio product.total_sales total_revenue 10000 as share_tiny %}
+                                    {% if share_tiny == 0 %}
+                                        &lt;0.01%
+                                    {% elif share_tiny < 1 %}
+                                        0.0{{ share_tiny }}%
+                                    {% else %}
+                                        {% widthratio product.total_sales total_revenue 100 %}%
+                                    {% endif %}
+                                {% else %}
+                                    0%
+                                {% endif %}
                             </span>
                         </div>
                     </td>

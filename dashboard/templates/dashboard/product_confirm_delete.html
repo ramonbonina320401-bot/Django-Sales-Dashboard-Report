@@ -1,0 +1,101 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Delete Product{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div>
+        <h1 class="text-3xl font-bold text-white">Delete Product?</h1>
+        <p class="text-gray-400 mt-2">This action cannot be undone</p>
+    </div>
+
+    <!-- Confirmation Card -->
+    <div class="mt-8 bg-red-500/10 border-2 border-red-500 rounded-xl p-8">
+        <div class="flex gap-4">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-red-500 text-5xl"></i>
+            </div>
+            <div class="flex-1">
+                <h2 class="text-2xl font-bold text-red-400 mb-4">Confirm Deletion</h2>
+                
+                <!-- Product Info -->
+                <div class="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-700/50">
+                    <p class="text-gray-300 text-sm uppercase">Product</p>
+                    <p class="text-white text-xl font-semibold mt-1">{{ product.name }}</p>
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <p class="text-gray-400 text-xs">Category</p>
+                            <p class="text-teal-400 font-semibold">{{ product.category }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Unit Price</p>
+                            <p class="text-white font-semibold">${{ product.price }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">Unit Cost</p>
+                            <p class="text-white font-semibold">${{ product.cost }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impact Warning -->
+                {% if sales_count > 0 %}
+                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                    <p class="text-yellow-300 text-sm">
+                        <i class="fas fa-warning mr-2"></i>
+                        This product has <strong>{{ sales_count }} sales record{{ sales_count|pluralize }}</strong> associated with it.
+                    </p>
+                </div>
+
+                <!-- Delete Options -->
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center p-4 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <input type="radio" name="delete_sales" value="" checked class="w-4 h-4 accent-red-500">
+                            <span class="ml-3 text-white">
+                                <strong>Keep sales records</strong>
+                                <p class="text-gray-400 text-sm">Delete product only (sales data remains)</p>
+                            </span>
+                        </label>
+
+                        <label class="flex items-center p-4 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <input type="radio" name="delete_sales" value="on" class="w-4 h-4 accent-red-500">
+                            <span class="ml-3 text-white">
+                                <strong>Delete sales records too</strong>
+                                <p class="text-gray-400 text-sm">Remove product and all {{ sales_count }} associated sales</p>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3 pt-6">
+                        <button type="submit" class="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i> Delete Product
+                        </button>
+                        <a href="{% url 'product_list' %}" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+                {% else %}
+                <p class="text-gray-300 mb-6">This product has no sales records. It can be safely deleted.</p>
+
+                <form method="POST" class="flex gap-3">
+                    {% csrf_token %}
+                    <button type="submit" class="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-trash"></i> Delete Product
+                    </button>
+                    <a href="{% url 'product_list' %}" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
