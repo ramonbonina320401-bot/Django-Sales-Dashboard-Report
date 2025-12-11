@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import Product, SalesData
 
 
@@ -36,6 +37,20 @@ class ProductForm(forms.ModelForm):
             'price': 'Selling Price (₱)',
             'cost': 'Cost Price (₱)',
         }
+    
+    def clean_name(self):
+        """Validate that product name is unique (case-insensitive)"""
+        name = self.cleaned_data.get('name', '').strip().title()
+        
+        # Check for duplicates (excluding current instance if updating)
+        qs = Product.objects.filter(name__iexact=name)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        
+        if qs.exists():
+            raise ValidationError(f'A product named "{name}" already exists. Please use a different name.')
+        
+        return name
 
 
 class SalesDataForm(forms.ModelForm):

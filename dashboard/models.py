@@ -4,10 +4,15 @@ from django.utils import timezone
 # Create your models here.
 
 class Product(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     category = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cost = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def save(self, *args, **kwargs):
+        """Normalize product name to title case before saving"""
+        self.name = self.name.strip().title()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
