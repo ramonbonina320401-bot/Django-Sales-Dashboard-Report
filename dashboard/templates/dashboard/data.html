@@ -50,6 +50,100 @@
         </div>
     </div>
 
+    <!-- Search and Filter Bar -->
+    <form method="GET" class="mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Search Box -->
+            <div class="lg:col-span-2">
+                <label class="block text-gray-400 text-xs font-semibold mb-2">
+                    <i class="fas fa-search mr-1"></i> Search Product
+                </label>
+                <input type="text" 
+                       name="search" 
+                       value="{{ search_query }}"
+                       placeholder="Search by product name..." 
+                       class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-teal-500 focus:outline-none text-sm">
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+                <label class="block text-gray-400 text-xs font-semibold mb-2">
+                    <i class="fas fa-filter mr-1"></i> Category
+                </label>
+                <select name="category" 
+                        class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-teal-500 focus:outline-none text-sm">
+                    <option value="all" {% if category_filter == 'all' %}selected{% endif %}>All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>
+                        {{ category|title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Date From -->
+            <div>
+                <label class="block text-gray-400 text-xs font-semibold mb-2">
+                    <i class="fas fa-calendar-alt mr-1"></i> Date From
+                </label>
+                <input type="date" 
+                       name="date_from" 
+                       value="{{ date_from }}"
+                       class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-teal-500 focus:outline-none text-sm">
+            </div>
+
+            <!-- Date To -->
+            <div>
+                <label class="block text-gray-400 text-xs font-semibold mb-2">
+                    <i class="fas fa-calendar-alt mr-1"></i> Date To
+                </label>
+                <input type="date" 
+                       name="date_to" 
+                       value="{{ date_to }}"
+                       class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-teal-500 focus:outline-none text-sm">
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex gap-2 mt-4">
+            <button type="submit" 
+                    class="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                <i class="fas fa-search"></i> Apply Filters
+            </button>
+            <a href="{% url 'data' %}" 
+               class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                <i class="fas fa-times"></i> Clear Filters
+            </a>
+        </div>
+    </form>
+
+    <!-- Active Filters Display -->
+    {% if search_query or category_filter != 'all' or date_from or date_to %}
+    <div class="mb-4 flex flex-wrap gap-2 items-center">
+        <span class="text-gray-400 text-xs font-semibold">Active Filters:</span>
+        {% if search_query %}
+        <span class="px-3 py-1 bg-teal-500/20 text-teal-400 rounded-full text-xs flex items-center gap-2">
+            <i class="fas fa-search"></i> Search: "{{ search_query }}"
+        </span>
+        {% endif %}
+        {% if category_filter != 'all' %}
+        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs flex items-center gap-2">
+            <i class="fas fa-tag"></i> Category: {{ category_filter|title }}
+        </span>
+        {% endif %}
+        {% if date_from %}
+        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs flex items-center gap-2">
+            <i class="fas fa-calendar-alt"></i> From: {{ date_from }}
+        </span>
+        {% endif %}
+        {% if date_to %}
+        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs flex items-center gap-2">
+            <i class="fas fa-calendar-alt"></i> To: {{ date_to }}
+        </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>

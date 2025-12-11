@@ -171,20 +171,53 @@ def market_share(request):
 
 @login_required(login_url='login')
 def raw_data(request):
-    """Raw Data Preview with SQL database integration"""
+    """Raw Data Preview with SQL database integration, search and filter"""
     
-    # Get all sales data with related product info (SQL JOIN)
-    sales_data = SalesData.objects.select_related('product').order_by('-date')[:100]
+    # Get search and filter parameters
+    search_query = request.GET.get('search', '')
+    category_filter = request.GET.get('category', 'all')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
     
-    # Get summary statistics
+    # Start with all sales data with related product info (SQL JOIN)
+    sales_data = SalesData.objects.select_related('product').order_by('-date')
+    
+    # Apply search filter (search in product name)
+    if search_query:
+        sales_data = sales_data.filter(product__name__icontains=search_query)
+    
+    # Apply category filter
+    if category_filter != 'all':
+        sales_data = sales_data.filter(product__category__iexact=category_filter)
+    
+    # Apply date range filters
+    if date_from:
+        sales_data = sales_data.filter(date__gte=date_from)
+    if date_to:
+        sales_data = sales_data.filter(date__lte=date_to)
+    
+    # Get unique categories for filter dropdown
+    categories = Product.objects.values_list('category', flat=True).distinct().order_by('category')
+    
+    # Limit to 100 records for display
+    sales_data = sales_data[:100]
+    
+    # Get summary statistics (based on filtered results)
     total_records = SalesData.objects.count()
     total_products = Product.objects.count()
+    filtered_count = sales_data.count() if sales_data else 0
     
     context = {
         'active_page': 'data',
         'sales_data': sales_data,
         'total_records': total_records,
         'total_products': total_products,
+        'filtered_count': filtered_count,
+        'categories': categories,
+        'search_query': search_query,
+        'category_filter': category_filter,
+        'date_from': date_from,
+        'date_to': date_to,
     }
     
     return render(request, 'dashboard/data.html', context)
