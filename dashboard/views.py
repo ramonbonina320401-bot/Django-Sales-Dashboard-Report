@@ -427,7 +427,7 @@ def salesdata_create(request):
         if form.is_valid():
             sales = form.save()
             messages.success(request, 'Sales record created successfully!')
-            return redirect('data')
+            return redirect('sales')
         else:
             messages.error(request, 'Error creating sales record. Please check the form.')
     else:

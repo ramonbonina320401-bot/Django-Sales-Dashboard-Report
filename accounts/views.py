@@ -91,6 +91,10 @@ def login_view(request):
 
 @login_required(login_url='login')
 def logout_view(request):
+    # Get message storage to clear all pending messages
+    storage = messages.get_messages(request)
+    storage.used = True  # Mark all messages as used to clear them
+    
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('login')
