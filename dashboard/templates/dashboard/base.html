@@ -57,10 +57,24 @@
         html.light-mode-active .text-gray-400 {
             color: #6b7280 !important;
         }
+        /* Disable animations when setting is off */
+        body.no-animations,
+        body.no-animations * {
+            transition: none !important;
+            animation: none !important;
+        }
+        
         /* Light mode comprehensive fixes */
         body.bg-gray-50,
         body.bg-gray-50 * {
             transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        
+        /* Light mode with animations disabled */
+        body.bg-gray-50.no-animations,
+        body.bg-gray-50.no-animations * {
+            transition: none !important;
+            animation: none !important;
         }
         
         /* All text elements in light mode */
@@ -370,14 +384,14 @@
                     <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
                         <span class="text-gray-300 text-sm">Animations</span>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked class="sr-only peer">
+                            <input type="checkbox" id="animations-toggle" checked class="sr-only peer">
                             <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
                         </label>
                     </div>
                     <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
                         <span class="text-gray-300 text-sm">Auto-refresh Data</span>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer">
+                            <input type="checkbox" id="autorefresh-toggle" class="sr-only peer">
                             <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
                         </label>
                     </div>
@@ -677,7 +691,10 @@
         }
     })();
     
-    // Also check when DOM is ready
+    // Auto-refresh interval variable
+    let autoRefreshInterval = null;
+
+    // Load all settings on page load
     document.addEventListener('DOMContentLoaded', function() {
         const savedTheme = localStorage.getItem('theme');
         console.log('DOM Ready - Stored theme:', savedTheme);
@@ -685,10 +702,55 @@
             console.log('Re-applying light theme after DOM load');
             setTheme('light');
         }
+        
+        // Load animations setting
+        const animationsEnabled = localStorage.getItem('animations') !== 'false';
+        document.getElementById('animations-toggle').checked = animationsEnabled;
+        applyAnimationsSetting(animationsEnabled);
+        
+        // Load auto-refresh setting
+        const autoRefreshEnabled = localStorage.getItem('autoRefresh') === 'true';
+        document.getElementById('autorefresh-toggle').checked = autoRefreshEnabled;
+        applyAutoRefreshSetting(autoRefreshEnabled);
     });
 
+    function applyAnimationsSetting(enabled) {
+        if (enabled) {
+            document.body.classList.remove('no-animations');
+        } else {
+            document.body.classList.add('no-animations');
+        }
+    }
+
+    function applyAutoRefreshSetting(enabled) {
+        // Clear any existing interval
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+        
+        // Start auto-refresh if enabled (refresh every 30 seconds)
+        if (enabled) {
+            autoRefreshInterval = setInterval(function() {
+                console.log('Auto-refreshing page...');
+                window.location.reload();
+            }, 30000); // 30 seconds
+        }
+    }
+
     function saveSettings() {
+        // Save animations setting
+        const animationsEnabled = document.getElementById('animations-toggle').checked;
+        localStorage.setItem('animations', animationsEnabled);
+        applyAnimationsSetting(animationsEnabled);
+        
+        // Save auto-refresh setting
+        const autoRefreshEnabled = document.getElementById('autorefresh-toggle').checked;
+        localStorage.setItem('autoRefresh', autoRefreshEnabled);
+        applyAutoRefreshSetting(autoRefreshEnabled);
+        
         toggleSettings();
+        
         // Show success message
         const notification = document.createElement('div');
         notification.className = 'fixed bottom-4 right-4 bg-teal-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
