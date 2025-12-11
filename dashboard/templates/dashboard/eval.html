@@ -1,64 +1,14 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
-<!-- Lesson Summary Panel -->
-<div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-xl p-4 mb-6">
-    <div class="flex items-start gap-3">
-        <div class="bg-purple-500/20 p-2 rounded-lg">
-            <i class="fas fa-graduation-cap text-purple-400 text-xl"></i>
-        </div>
-        <div class="flex-1">
-            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
-                <i class="fas fa-book-open text-sm text-purple-400"></i>
-                Module 4: Model Evaluation - Classification (Not Regression)
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-brain text-xs"></i> ML Classification
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• Predicts <strong>categories</strong> (not numbers)</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">confusion_matrix()</code> from scikit-learn</li>
-                        <li>• Binary: "Increase" or "No Increase"</li>
-                        <li>• <strong>Different from Module 1's Regression</strong></li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-pink-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-chart-bar text-xs"></i> Performance Metrics
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <strong>Accuracy:</strong> Overall correctness</li>
-                        <li>• <strong>Precision:</strong> Positive predictive value</li>
-                        <li>• <strong>Recall:</strong> Sensitivity measure</li>
-                        <li>• <strong>F1 Score:</strong> Harmonic mean</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-orange-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-exchange-alt text-xs"></i> vs Regression
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <strong>Classification:</strong> "Yes/No" labels</li>
-                        <li>• <strong>Regression:</strong> Numeric values (₱)</li>
-                        <li>• Module 1 = Regression</li>
-                        <li>• Module 4 = Classification</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
     <div class="flex items-center gap-3">
         <div class="bg-purple-500/10 p-2 rounded-lg text-purple-400">
             <i class="fas fa-brain"></i>
         </div>
         <div>
-            <div class="text-white font-semibold text-lg">Sales Prediction Model Evaluation</div>
-            <div class="text-gray-500 text-sm">Confusion matrix analysis using scikit-learn for sales trend prediction accuracy</div>
+            <div class="text-white font-semibold text-lg">Model Performance Evaluation</div>
+            <div class="text-gray-500 text-sm">Sales prediction accuracy metrics</div>
         </div>
     </div>
 </div>

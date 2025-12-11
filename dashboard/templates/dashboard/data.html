@@ -1,64 +1,14 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
-<!-- Lesson Summary Panel -->
-<div class="bg-gradient-to-r from-cyan-900/20 to-blue-900/20 border border-cyan-500/30 rounded-xl p-4 mb-6">
-    <div class="flex items-start gap-3">
-        <div class="bg-cyan-500/20 p-2 rounded-lg">
-            <i class="fas fa-graduation-cap text-cyan-400 text-xl"></i>
-        </div>
-        <div class="flex-1">
-            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
-                <i class="fas fa-book-open text-sm text-cyan-400"></i>
-                Module 3: Raw Data Preview - SQL Database & JSON Handling
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-database text-xs"></i> SQL Operations
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <code class="bg-gray-700 px-1 rounded">SELECT * FROM</code> sales_data</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">INNER JOIN</code> products table</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">ORDER BY date DESC</code> sorting</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">LIMIT 100</code> pagination</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-blue-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-exchange-alt text-xs"></i> CRUD Operations
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <strong>Read:</strong> Fetch sales records</li>
-                        <li>• <strong>Export:</strong> CSV & JSON generation</li>
-                        <li>• <strong>Refresh:</strong> Real-time data reload</li>
-                        <li>• Django ORM with SQLite backend</li>
-                    </ul>
-                </div>
-                <div class="bg-gray-800/50 rounded-lg p-3">
-                    <div class="text-purple-400 font-semibold mb-1 flex items-center gap-2">
-                        <i class="fas fa-file-code text-xs"></i> JSON Handling
-                    </div>
-                    <ul class="text-gray-300 text-xs space-y-1">
-                        <li>• <code class="bg-gray-700 px-1 rounded">json.dumps()</code> - Serialize to JSON</li>
-                        <li>• <code class="bg-gray-700 px-1 rounded">json.loads()</code> - Parse JSON string</li>
-                        <li>• Data interchange format</li>
-                        <li>• Python dict → JSON conversion</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50 mb-6">
     <div class="flex items-center gap-3">
         <div class="bg-green-500/10 p-2 rounded-lg text-green-400">
             <i class="fas fa-database"></i>
         </div>
         <div>
-            <div class="text-white font-semibold text-lg">SQL Database Integration</div>
-            <div class="text-gray-500 text-sm">Direct database query using Django ORM (SQL SELECT with JOIN)</div>
+            <div class="text-white font-semibold text-lg">Sales Data Records</div>
+            <div class="text-gray-500 text-sm">Complete transaction history</div>
         </div>
     </div>
 </div>
