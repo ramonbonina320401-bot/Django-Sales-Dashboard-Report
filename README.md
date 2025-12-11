@@ -97,10 +97,135 @@ This project is a full-stack web application that combines data analytics, machi
 - Performance metrics calculation
 
 **What It Does:**
-- Evaluates machine learning model performance
-- Displays confusion matrix visualization
-- Calculates accuracy, precision, recall, F1 score
-- Demonstrates difference between Regression (Module 1) and Classification (Module 4)
+This module demonstrates how to evaluate a machine learning model's performance using classification metrics.
+
+**Understanding Classification vs Regression:**
+
+Think of it like this:
+- **Regression (Module 1):** Predicts a **number** → "Next month's sales will be ₱250,000"
+- **Classification (Module 4):** Predicts a **category** → "This sale is HIGH" or "This sale is LOW"
+
+**Real-World Example:**
+Imagine you're building a system to predict if a sale will be "High" or "Low":
+- If revenue > ₱10,000 → Label as **HIGH (1)**
+- If revenue ≤ ₱10,000 → Label as **LOW (0)**
+
+**The Confusion Matrix Explained:**
+
+The confusion matrix shows 4 possible outcomes when your model makes predictions:
+
+```
+                  Predicted
+                 LOW    HIGH
+Actual  LOW    [  25      5  ]  ← True Negatives & False Positives
+        HIGH   [   3     17  ]  ← False Negatives & True Positives
+```
+
+Let's break this down:
+
+1. **True Positives (TP = 17):** ✅ Correct!
+   - Model predicted: HIGH
+   - Reality: HIGH
+   - Example: Model said "This ₱15,000 sale is HIGH" → It was HIGH
+   
+2. **True Negatives (TN = 25):** ✅ Correct!
+   - Model predicted: LOW
+   - Reality: LOW
+   - Example: Model said "This ₱5,000 sale is LOW" → It was LOW
+   
+3. **False Positives (FP = 5):** ❌ Wrong! (Type I Error)
+   - Model predicted: HIGH
+   - Reality: LOW
+   - Example: Model said "This ₱8,000 sale is HIGH" → Actually it was LOW
+   - **The Alarm:** Model raised a false alarm
+   
+4. **False Negatives (FN = 3):** ❌ Wrong! (Type II Error)
+   - Model predicted: LOW
+   - Reality: HIGH
+   - Example: Model said "This ₱12,000 sale is LOW" → Actually it was HIGH
+   - **The Miss:** Model missed a high sale
+
+**Performance Metrics Explained:**
+
+1. **Accuracy = (TP + TN) / Total**
+   - Formula: `(17 + 25) / 50 = 42/50 = 0.84 = 84%`
+   - Meaning: "Out of 50 predictions, how many were correct?"
+   - **In simple terms:** Overall correctness score
+   - **Good when:** Classes are balanced (equal HIGH and LOW sales)
+
+2. **Precision = TP / (TP + FP)**
+   - Formula: `17 / (17 + 5) = 17/22 = 0.77 = 77%`
+   - Meaning: "When model says HIGH, how often is it actually HIGH?"
+   - **In simple terms:** How trustworthy are the model's positive predictions?
+   - **Good when:** You want to avoid false alarms
+   - **Example:** Email spam filter (don't mark important emails as spam)
+
+3. **Recall = TP / (TP + FN)**
+   - Formula: `17 / (17 + 3) = 17/20 = 0.85 = 85%`
+   - Meaning: "Of all actual HIGH sales, how many did the model catch?"
+   - **In simple terms:** How good is the model at finding all the HIGH sales?
+   - **Good when:** You don't want to miss any positives
+   - **Example:** Disease detection (catch all sick patients, even if some false alarms)
+
+4. **F1 Score = 2 × (Precision × Recall) / (Precision + Recall)**
+   - Formula: `2 × (0.77 × 0.85) / (0.77 + 0.85) = 0.81 = 81%`
+   - Meaning: Balance between Precision and Recall
+   - **In simple terms:** The "sweet spot" score that considers both false alarms and misses
+   - **Good when:** You want balanced performance
+
+**When to Use Each Metric:**
+
+| Metric | Use Case | Example |
+|--------|----------|---------|
+| **Accuracy** | Balanced data, general performance | Grade test scores |
+| **Precision** | Cost of false alarm is high | Spam filter (don't block real emails) |
+| **Recall** | Cost of missing positive is high | Cancer detection (find all cases) |
+| **F1 Score** | Need balance, uneven classes | Sales prediction (balance both) |
+
+**Code Example (Simplified):**
+
+```python
+# Step 1: Prepare data
+y_true = [1, 0, 1, 1, 0, 1, 0, 0]  # Actual: 4 HIGH, 4 LOW
+y_pred = [1, 0, 1, 0, 0, 1, 0, 1]  # Predicted by model
+
+# Step 2: Calculate metrics
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+accuracy = accuracy_score(y_true, y_pred)      # 6/8 = 75%
+precision = precision_score(y_true, y_pred)    # 3/4 = 75%
+recall = recall_score(y_true, y_pred)          # 3/4 = 75%
+
+# Step 3: Interpret
+print(f"Model is {accuracy*100}% accurate")
+print(f"When it says HIGH, it's right {precision*100}% of the time")
+print(f"It catches {recall*100}% of all HIGH sales")
+```
+
+**Why This Matters in Sales:**
+
+1. **Business Decision:** Should you stock up on products?
+   - High Precision: Don't overstock (avoid false alarms)
+   - High Recall: Don't miss opportunities (catch all high sales)
+
+2. **Resource Allocation:** Where to focus marketing?
+   - If model predicts HIGH sales → Invest more in that product
+   - Need accurate predictions to avoid wasting money
+
+3. **Performance Tracking:** Is your sales strategy working?
+   - Compare model predictions vs actual results
+   - Improve strategies based on what the model missed
+
+**Key Takeaways:**
+
+✅ **Classification** puts things into categories (HIGH/LOW, Yes/No, Cat/Dog)  
+✅ **Confusion Matrix** shows all 4 types of predictions (2 correct, 2 wrong)  
+✅ **Accuracy** = Overall correctness  
+✅ **Precision** = How trustworthy are positive predictions?  
+✅ **Recall** = How many positives did we catch?  
+✅ **F1 Score** = Balance between Precision and Recall  
+
+**Remember:** There's no "perfect" metric - choose based on your business needs!
 
 ---
 
