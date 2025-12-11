@@ -328,12 +328,16 @@ python manage.py createsuperuser
 
 Follow prompts to create username and password for Django admin access.
 
-#### 7. Populate Sample Data
+#### 7. Populate Sample Data (Optional)
 ```bash
 python manage.py populate_sales
 ```
 
-This generates:
+**Note:** This step is optional. By default, the system starts with no products or sales data. You can:
+- **Skip this step** to start with a clean database and add your own data
+- **Run this command** if you want to generate sample data for testing/learning
+
+If you choose to populate sample data, it generates:
 - 5 products (Laptop, Mouse, Keyboard, Monitor, Headset)
 - 4,678+ sales transactions
 - 365 days of historical data
