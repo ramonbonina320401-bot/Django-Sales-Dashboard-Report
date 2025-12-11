@@ -1,6 +1,56 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
 
+<!-- Lesson Summary Panel -->
+<div class="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-xl p-4 mb-6">
+    <div class="flex items-start gap-3">
+        <div class="bg-blue-500/20 p-2 rounded-lg">
+            <i class="fas fa-graduation-cap text-blue-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-book-open text-sm text-blue-400"></i>
+                Module 1: Sales Report - NumPy, Matplotlib, Statistics & Linear Regression
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-teal-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-calculator text-xs"></i> NumPy (Statistics)
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">np.sum()</code> - Total Revenue & Cost</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">np.mean()</code> - Average (Central Tendency)</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">np.median()</code> - Middle value (50%)</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">np.std()</code> - Data Spread</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-yellow-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-xs"></i> Matplotlib & Regression
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• <code class="bg-gray-700 px-1 rounded">Line Graph</code> - 12-month trends</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">np.histogram()</code> - Distribution</li>
+                        <li>• <code class="bg-gray-700 px-1 rounded">LinearRegression()</code> - Prediction</li>
+                        <li>• Line of Best Fit visualization</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3">
+                    <div class="text-pink-400 font-semibold mb-1 flex items-center gap-2">
+                        <i class="fas fa-brain text-xs"></i> ML Regression
+                    </div>
+                    <ul class="text-gray-300 text-xs space-y-1">
+                        <li>• Predicts <strong>continuous numbers</strong></li>
+                        <li>• Future sales amount (₱)</li>
+                        <li>• Not classification (categories)</li>
+                        <li>• See Module 4 for Classification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Statistical Analysis Panel (NumPy Functions) -->
 <div class="bg-gradient-to-r from-indigo-900/20 to-purple-900/20 border border-indigo-500/30 rounded-xl p-6 mb-6">
     <div class="flex items-start gap-3 mb-4">
@@ -14,41 +64,58 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-yellow-400 text-xs font-semibold mb-1">Mean Revenue</div>
+            <div class="text-yellow-400 text-xs font-semibold mb-1">Mean Revenue <code class="bg-gray-700 px-1 text-[10px]">np.mean()</code></div>
             <div class="text-white text-2xl font-bold">{{ mean_revenue }}</div>
             <div class="text-gray-500 text-xs mt-1">Average per transaction</div>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-green-400 text-xs font-semibold mb-1">Median Revenue</div>
+            <div class="text-green-400 text-xs font-semibold mb-1">Median Revenue <code class="bg-gray-700 px-1 text-[10px]">np.median()</code></div>
             <div class="text-white text-2xl font-bold">{{ median_revenue }}</div>
             <div class="text-gray-500 text-xs mt-1">Middle value (50th percentile)</div>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-red-400 text-xs font-semibold mb-1">Standard Deviation</div>
+            <div class="text-red-400 text-xs font-semibold mb-1">Standard Deviation <code class="bg-gray-700 px-1 text-[10px]">np.std()</code></div>
             <div class="text-white text-2xl font-bold">{{ std_revenue }}</div>
             <div class="text-gray-500 text-xs mt-1">Data variability measure</div>
         </div>
     </div>
 </div>
 
-<!-- Sales Forecast Panel -->
+<!-- Linear Regression Prediction Panel -->
 <div class="bg-gradient-to-r from-pink-900/20 to-orange-900/20 border border-pink-500/30 rounded-xl p-6 mb-6">
     <div class="flex items-start gap-3 mb-4">
         <div class="bg-pink-500/20 p-2 rounded-lg">
             <i class="fas fa-chart-line text-pink-400 text-xl"></i>
         </div>
         <div class="flex-1">
-            <h3 class="text-white font-semibold">Sales Forecast</h3>
-            <p class="text-gray-400 text-xs">Predicted sales for upcoming periods based on historical trends</p>
+            <h3 class="text-white font-semibold">Linear Regression Prediction (Regression Model)</h3>
+            <p class="text-gray-400 text-xs">Predicting continuous numerical values (Sales Amount) for future periods</p>
         </div>
     </div>
-    <div class="bg-gray-800/50 rounded-lg p-4">
-        <div class="text-pink-400 text-xs font-semibold mb-2 flex items-center gap-2">
-            <i class="fas fa-lightbulb"></i> Next Month Forecast
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-800/50 rounded-lg p-4">
+            <div class="text-pink-400 text-xs font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-lightbulb"></i> Next Month Forecast
+            </div>
+            <div class="text-white text-3xl font-bold mb-1">{{ predicted_next_month }}</div>
+            <div class="text-gray-400 text-xs">
+                <strong>Model:</strong> Linear Regression (Continuous Prediction)<br>
+                <strong>Slope:</strong> {{ regression_slope }} / month<br>
+                <strong>Type:</strong> Regression (not Classification)
+            </div>
         </div>
-        <div class="text-white text-3xl font-bold mb-1">{{ predicted_next_month }}</div>
-        <div class="text-gray-400 text-xs">
-            <strong>Trend:</strong> {{ regression_slope }} / month
+        <div class="bg-gray-800/50 rounded-lg p-4 flex items-center">
+            <div class="text-xs text-gray-300 leading-relaxed">
+                <div class="bg-orange-500/10 border border-orange-500/30 rounded p-2 mb-2">
+                    <strong class="text-orange-400">🎯 Regression vs Classification:</strong>
+                </div>
+                <ul class="space-y-1 text-[11px]">
+                    <li><strong class="text-pink-400">• Regression:</strong> Predicts <u>continuous numbers</u> (e.g., ₱50,000 sales)</li>
+                    <li><strong class="text-teal-400">• Classification:</strong> Predicts <u>categories</u> (e.g., "Increase" or "No Increase")</li>
+                    <li class="text-yellow-400">• This module uses <strong>Linear Regression</strong></li>
+                    <li class="text-yellow-400">• Module 4 uses <strong>Classification</strong> for comparison</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -58,13 +125,13 @@
         <div class="label-sm text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Total Revenue</div>
         <div class="val-xl text-3xl font-bold text-white mb-2" id="stat-revenue">{{ total_revenue }}</div>
         <div class="sub-caption flex items-center text-teal-400 text-xs font-medium bg-teal-400/10 w-fit px-2 py-1 rounded">
-            <i class="fas fa-arrow-up mr-1"></i> All Sales
+            <i class="fas fa-arrow-up mr-1"></i> np.sum()
         </div>
     </div>
     <div class="panel bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
         <div class="label-sm text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Total Capital</div>
         <div class="val-xl text-3xl font-bold text-white mb-2" id="stat-capital">{{ total_cost }}</div>
-        <div class="sub-caption text-gray-500 text-xs">Total costs</div>
+        <div class="sub-caption text-gray-500 text-xs">np.sum() on costs</div>
     </div>
     <div class="panel bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700/50">
         <div class="label-sm text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Gross Profit</div>
@@ -92,11 +159,11 @@
     <div class="flex flex-wrap gap-2" id="filter-container">
         <a href="?filter=all" class="filter-btn {% if current_filter == 'all' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="all">All</a>
         
-        <a href="?filter=Laptop" class="filter-btn {% if current_filter == 'Laptop' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="Laptop">Laptop</a>
-        <a href="?filter=Mouse" class="filter-btn {% if current_filter == 'Mouse' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="Mouse">Mouse</a>
-        <a href="?filter=Keyboard" class="filter-btn {% if current_filter == 'Keyboard' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="Keyboard">Keyboard</a>
-        <a href="?filter=Monitor" class="filter-btn {% if current_filter == 'Monitor' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="Monitor">Monitor</a>
-        <a href="?filter=Headset" class="filter-btn {% if current_filter == 'Headset' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="Headset">Headset</a>
+        <a href="?filter=laptop" class="filter-btn {% if current_filter == 'laptop' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="laptop">Laptop</a>
+        <a href="?filter=mouse" class="filter-btn {% if current_filter == 'mouse' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="mouse">Mouse</a>
+        <a href="?filter=keyboard" class="filter-btn {% if current_filter == 'keyboard' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="keyboard">Keyboard</a>
+        <a href="?filter=monitor" class="filter-btn {% if current_filter == 'monitor' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="monitor">Monitor</a>
+        <a href="?filter=headset" class="filter-btn {% if current_filter == 'headset' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="headset">Headset</a>
     </div>
 </div>
 

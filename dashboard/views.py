@@ -2,10 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.paginator import Paginator
 from .models import Product, SalesData
-from .forms import ProductForm, SalesDataForm
 from .reports import SalesReport, MarketShareReport, PredictionReport
 import numpy as np
 import matplotlib
