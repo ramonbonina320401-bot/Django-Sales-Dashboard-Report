@@ -130,11 +130,11 @@ def sales_report(request):
 def market_share(request):
     """Market Share visualization showing product performance"""
     
-    # Get sales by product (only products with sales)
+    # Get sales by product - show ALL products
     product_sales = Product.objects.annotate(
         total_sales=Sum('sales__revenue'),
         units_sold=Sum('sales__quantity')
-    ).filter(total_sales__gt=0).order_by('-total_sales')
+    ).order_by('-total_sales')
     
     products = []
     revenues = []
@@ -146,6 +146,7 @@ def market_share(request):
         if product.total_sales:
             total_revenue += float(product.total_sales)
     
+    # Only include products with sales in the chart
     for idx, product in enumerate(product_sales):
         if product.total_sales:
             products.append(product.name)
@@ -161,7 +162,7 @@ def market_share(request):
         'revenues': json.dumps(revenues),
         'percentages': json.dumps(percentages),
         'colors': json.dumps(colors[:len(products)]),
-        'product_data': product_sales,
+        'product_data': product_sales,  # All products for the table
         'total_revenue': total_revenue if total_revenue > 0 else 1,  # Prevent division by zero
     }
     
@@ -402,6 +403,7 @@ def salesdata_create(request):
     context = {
         'form': form,
         'action': 'Create',
+        'products': Product.objects.all(),
     }
     return render(request, 'dashboard/salesdata_form.html', context)
 
@@ -426,6 +428,7 @@ def salesdata_update(request, pk):
         'form': form,
         'salesdata': salesdata,
         'action': 'Update',
+        'products': Product.objects.all(),
     }
     return render(request, 'dashboard/salesdata_form.html', context)
 

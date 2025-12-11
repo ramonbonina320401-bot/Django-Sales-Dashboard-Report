@@ -73,6 +73,13 @@
                 </div>
             </div>
 
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4">
+                <p class="text-blue-400 text-sm">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Note:</strong> Revenue and Cost will auto-calculate based on quantity and product price.
+                </p>
+            </div>
+
             <div class="flex gap-3 pt-4">
                 <button type="submit" class="flex-1 bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
                     <i class="fas fa-check"></i>
@@ -86,4 +93,58 @@
         </form>
     </div>
 </div>
+
+<script>
+// Auto-calculate revenue and cost when product or quantity changes
+const productSelect = document.getElementById('id_product');
+const quantityInput = document.getElementById('id_quantity');
+const revenueInput = document.getElementById('id_revenue');
+const costInput = document.getElementById('id_cost');
+
+// Product data with prices and costs
+const productData = {
+    {% for product in products %}
+    '{{ product.id }}': {
+        price: {{ product.price }},
+        cost: {{ product.cost }}
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+};
+
+function calculateValues() {
+    const productId = productSelect.value;
+    const quantity = parseFloat(quantityInput.value) || 0;
+    
+    if (productId && productData[productId] && quantity > 0) {
+        const product = productData[productId];
+        const revenue = (product.price * quantity).toFixed(2);
+        const cost = (product.cost * quantity).toFixed(2);
+        
+        revenueInput.value = revenue;
+        costInput.value = cost;
+        
+        // Make fields readonly to prevent manual editing
+        revenueInput.readOnly = true;
+        costInput.readOnly = true;
+        revenueInput.style.backgroundColor = '#374151';
+        costInput.style.backgroundColor = '#374151';
+    } else {
+        // Allow manual entry if no product selected
+        revenueInput.readOnly = false;
+        costInput.readOnly = false;
+        revenueInput.style.backgroundColor = '';
+        costInput.style.backgroundColor = '';
+    }
+}
+
+if (productSelect && quantityInput) {
+    productSelect.addEventListener('change', calculateValues);
+    quantityInput.addEventListener('input', calculateValues);
+    
+    // Calculate on page load if values exist
+    if (productSelect.value && quantityInput.value) {
+        calculateValues();
+    }
+}
+</script>
 {% endblock %}

@@ -204,20 +204,41 @@
 
         <div class="flex flex-col gap-6">
             <a href="{% url 'sales' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
-                {% if active_page == 'sales' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                {% if active_page == 'sales' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}" 
+                title="Dashboard">
                 <i class="fas fa-home text-xl"></i>
             </a>
             <a href="{% url 'market' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
-                {% if active_page == 'market' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                {% if active_page == 'market' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}" 
+                title="Market Share">
                 <i class="fas fa-chart-pie text-xl"></i>
             </a>
             <a href="{% url 'data' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
-                {% if active_page == 'data' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                {% if active_page == 'data' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}" 
+                title="Sales Data">
                 <i class="fas fa-database text-xl"></i>
             </a>
             <a href="{% url 'eval' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
-                {% if active_page == 'eval' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}">
+                {% if active_page == 'eval' %}bg-teal-500 text-white shadow-lg{% else %}text-gray-400 hover:bg-gray-700 hover:text-white{% endif %}" 
+                title="Model Evaluation">
                 <i class="fas fa-sliders-h text-xl"></i>
+            </a>
+            
+            <!-- Divider -->
+            <div class="border-t border-gray-700 my-2"></div>
+            
+            <!-- Add Product -->
+            <a href="{% url 'product_create' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                text-green-400 hover:bg-gray-700 hover:text-green-300" 
+                title="Add Product">
+                <i class="fas fa-plus-circle text-xl"></i>
+            </a>
+            
+            <!-- Add Sales -->
+            <a href="{% url 'salesdata_create' %}" class="nav-item p-3 rounded-lg transition-all duration-200 
+                text-blue-400 hover:bg-gray-700 hover:text-blue-300" 
+                title="Add Sales Record">
+                <i class="fas fa-receipt text-xl"></i>
             </a>
         </div>
     </nav>

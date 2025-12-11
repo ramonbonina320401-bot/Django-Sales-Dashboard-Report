@@ -24,6 +24,11 @@ class SalesData(models.Model):
     cost = models.DecimalField(max_digits=12, decimal_places=2)
     profit = models.DecimalField(max_digits=12, decimal_places=2)
     
+    def save(self, *args, **kwargs):
+        """Auto-calculate profit before saving"""
+        self.profit = self.revenue - self.cost
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.product.name} - {self.date}"
     

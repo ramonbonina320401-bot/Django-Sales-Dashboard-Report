@@ -7,7 +7,7 @@ class ProductForm(forms.ModelForm):
     
     class Meta:
         model = Product
-        fields = ['name', 'category', 'price']
+        fields = ['name', 'category', 'price', 'cost']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500',
@@ -19,7 +19,13 @@ class ProductForm(forms.ModelForm):
             }),
             'price': forms.NumberInput(attrs={
                 'class': 'w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500',
-                'placeholder': 'Enter price',
+                'placeholder': 'Enter selling price',
+                'step': '0.01',
+                'min': '0'
+            }),
+            'cost': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500',
+                'placeholder': 'Enter cost price',
                 'step': '0.01',
                 'min': '0'
             }),
@@ -27,7 +33,8 @@ class ProductForm(forms.ModelForm):
         labels = {
             'name': 'Product Name',
             'category': 'Category',
-            'price': 'Price (₱)',
+            'price': 'Selling Price (₱)',
+            'cost': 'Cost Price (₱)',
         }
 
 
