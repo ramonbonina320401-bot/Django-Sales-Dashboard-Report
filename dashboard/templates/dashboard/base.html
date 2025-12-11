@@ -275,6 +275,37 @@
             border-color: #e5e7eb !important;
         }
         
+        /* Page headings in light mode */
+        body.bg-gray-50 h3.text-white {
+            color: #111827 !important;
+        }
+        
+        /* Buttons in light mode - keep proper contrast */
+        body.bg-gray-50 .bg-gray-700,
+        body.bg-gray-50 button.bg-gray-700,
+        body.bg-gray-50 a.bg-gray-700 {
+            background-color: #4b5563 !important;
+            color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 .bg-gray-700:hover,
+        body.bg-gray-50 button.bg-gray-700:hover,
+        body.bg-gray-50 a.bg-gray-700:hover {
+            background-color: #374151 !important;
+        }
+        
+        /* Teal buttons stay teal with white text */
+        body.bg-gray-50 .bg-teal-500,
+        body.bg-gray-50 button.bg-teal-500 {
+            background-color: #14b8a6 !important;
+            color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 .bg-teal-500:hover,
+        body.bg-gray-50 button.bg-teal-500:hover {
+            background-color: #0d9488 !important;
+        }
+        
         /* Specific metric cards */
         body.bg-gray-50 .panel {
             background-color: #ffffff !important;
