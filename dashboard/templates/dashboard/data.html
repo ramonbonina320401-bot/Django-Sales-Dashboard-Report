@@ -60,6 +60,10 @@
             <div class="text-white font-semibold text-lg">SQL Database Integration</div>
             <div class="text-gray-500 text-sm">Direct database query using Django ORM (SQL SELECT with JOIN)</div>
         </div>
+        <a href="{% url 'salesdata_create' %}" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 shadow-lg shadow-teal-500/20">
+            <i class="fas fa-plus"></i>
+            Add Sales Record
+        </a>
     </div>
 </div>
 
@@ -112,6 +116,7 @@
                     <th class="p-4 font-semibold text-right">Revenue</th>
                     <th class="p-4 font-semibold text-right">Cost</th>
                     <th class="p-4 font-semibold text-right">Profit</th>
+                    <th class="p-4 font-semibold text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-gray-300 text-sm">
@@ -131,13 +136,23 @@
                     <td class="p-4 text-right font-medium {% if sale.profit > 0 %}text-teal-400{% else %}text-red-400{% endif %}">
                         {% if sale.profit > 0 %}+{% endif %}₱{{ sale.profit|floatformat:2 }}
                     </td>
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <a href="{% url 'salesdata_update' sale.id %}" class="text-blue-400 hover:text-blue-300 transition-colors" title="Edit Record">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'salesdata_delete' sale.id %}" class="text-red-400 hover:text-red-300 transition-colors" title="Delete Record">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8" class="p-8 text-center text-gray-500">
+                    <td colspan="9" class="p-8 text-center text-gray-500">
                         <i class="fas fa-database text-4xl mb-3"></i>
                         <p class="text-lg">No sales data available</p>
-                        <p class="text-sm mt-2">Run <code class="bg-gray-700 px-2 py-1 rounded">python manage.py populate_sales</code> to generate sample data</p>
+                        <p class="text-sm mt-2">Click "Add Sales Record" above to create your first entry</p>
                     </td>
                 </tr>
                 {% endfor %}

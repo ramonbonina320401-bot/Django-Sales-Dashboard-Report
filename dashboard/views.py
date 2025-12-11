@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Product, SalesData
+from .forms import ProductForm, SalesDataForm
 from .reports import SalesReport, MarketShareReport, PredictionReport
 import numpy as np
 import matplotlib
@@ -16,6 +18,7 @@ import json
 
 # Create your views here.
 
+@login_required(login_url='login')
 def sales_report(request):
     """Sales Report with NumPy calculations, statistics, and Matplotlib visualizations"""
     
@@ -23,7 +26,8 @@ def sales_report(request):
     
     # Get sales data
     if filter_product != 'all':
-        sales_qs = SalesData.objects.filter(product__category=filter_product)
+        # Filter by product name (case-insensitive)
+        sales_qs = SalesData.objects.filter(product__name__iexact=filter_product)
     else:
         sales_qs = SalesData.objects.all()
     
@@ -95,6 +99,9 @@ def sales_report(request):
         distribution_labels = []
         distribution_values = []
     
+    # Get all available products for filter buttons
+    all_products = Product.objects.all().order_by('name')
+    
     context = {
         'active_page': 'sales',
         'total_revenue': f'₱{total_revenue:,.2f}',
@@ -113,19 +120,21 @@ def sales_report(request):
         'predicted_next_month': f'₱{predicted_value:,.2f}',
         'regression_slope': f'{slope:,.2f}',
         'regression_intercept': f'{intercept:,.2f}',
+        'all_products': all_products,
     }
     
     return render(request, 'dashboard/sales.html', context)
 
 
+@login_required(login_url='login')
 def market_share(request):
     """Market Share visualization showing product performance"""
     
-    # Get sales by product
+    # Get sales by product (only products with sales)
     product_sales = Product.objects.annotate(
         total_sales=Sum('sales__revenue'),
         units_sold=Sum('sales__quantity')
-    ).order_by('-total_sales')
+    ).filter(total_sales__gt=0).order_by('-total_sales')
     
     products = []
     revenues = []
@@ -153,12 +162,13 @@ def market_share(request):
         'percentages': json.dumps(percentages),
         'colors': json.dumps(colors[:len(products)]),
         'product_data': product_sales,
-        'total_revenue': total_revenue,
+        'total_revenue': total_revenue if total_revenue > 0 else 1,  # Prevent division by zero
     }
     
     return render(request, 'dashboard/market.html', context)
 
 
+@login_required(login_url='login')
 def raw_data(request):
     """Raw Data Preview with SQL database integration"""
     
@@ -179,6 +189,7 @@ def raw_data(request):
     return render(request, 'dashboard/data.html', context)
 
 
+@login_required(login_url='login')
 def export_csv(request):
     """Export sales data to CSV file"""
     import csv
@@ -206,6 +217,7 @@ def export_csv(request):
     return response
 
 
+@login_required(login_url='login')
 def export_json(request):
     """Export sales data to JSON file (JSON Handling Demonstration)"""
     from django.http import HttpResponse
@@ -245,6 +257,7 @@ def export_json(request):
     return response
 
 
+@login_required(login_url='login')
 def model_eval(request):
     """Model Evaluation with confusion matrix for sales predictions"""
     
@@ -301,60 +314,10 @@ def model_eval(request):
     
     return render(request, 'dashboard/eval.html', context)
 
+
 # ============================================================================
 # PRODUCT CRUD OPERATIONS
 # ============================================================================
-
-@login_required(login_url='login')
-def product_list(request):
-    """List all products with search, filter, and sort"""
-    products = Product.objects.all()
-    
-    # Search functionality
-    search = request.GET.get('search', '')
-    if search:
-        products = products.filter(name__icontains=search)
-    
-    # Filter by category
-    category = request.GET.get('category', '')
-    if category:
-        products = products.filter(category=category)
-    
-    # Sort functionality
-    sort_by = request.GET.get('sort', 'name')
-    products = products.order_by(sort_by)
-    
-    # Calculate profit margin for each product
-    products_with_margin = []
-    for product in products:
-        margin = ((product.price - product.cost) / product.price * 100) if product.price > 0 else 0
-        sales_count = product.sales.count()
-        total_revenue = sum(s.revenue for s in product.sales.all())
-        products_with_margin.append({
-            'product': product,
-            'margin': f'{margin:.1f}',
-            'sales_count': sales_count,
-            'total_revenue': total_revenue,
-        })
-    
-    # Pagination
-    paginator = Paginator(products_with_margin, 10)
-    page = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page)
-    
-    # Get all categories for filter
-    categories = Product.objects.values_list('category', flat=True).distinct()
-    
-    context = {
-        'page_obj': page_obj,
-        'categories': categories,
-        'search': search,
-        'category': category,
-        'sort_by': sort_by,
-        'active_page': 'products',
-    }
-    return render(request, 'dashboard/product_list.html', context)
-
 
 @login_required(login_url='login')
 def product_create(request):
@@ -364,67 +327,58 @@ def product_create(request):
         if form.is_valid():
             product = form.save()
             messages.success(request, f'Product "{product.name}" created successfully!')
-            return redirect('product_list')
+            return redirect('sales')
+        else:
+            messages.error(request, 'Error creating product. Please check the form.')
     else:
         form = ProductForm()
     
-    return render(request, 'dashboard/product_form.html', {
+    context = {
         'form': form,
-        'title': 'Add New Product',
-        'button_text': 'Create Product',
-        'is_create': True,
-    })
+        'action': 'Create',
+    }
+    return render(request, 'dashboard/product_form.html', context)
 
 
 @login_required(login_url='login')
-def product_edit(request, pk):
-    """Edit an existing product"""
-    product = Product.objects.get(pk=pk)
+def product_update(request, pk):
+    """Update an existing product"""
+    product = get_object_or_404(Product, pk=pk)
     
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():
-            form.save()
+            product = form.save()
             messages.success(request, f'Product "{product.name}" updated successfully!')
-            return redirect('product_list')
+            return redirect('sales')
+        else:
+            messages.error(request, 'Error updating product. Please check the form.')
     else:
         form = ProductForm(instance=product)
     
-    # Show sales history
-    sales_history = product.sales.all().order_by('-date')[:10]
-    
-    return render(request, 'dashboard/product_form.html', {
+    context = {
         'form': form,
         'product': product,
-        'sales_history': sales_history,
-        'title': f'Edit Product: {product.name}',
-        'button_text': 'Update Product',
-        'is_create': False,
-    })
+        'action': 'Update',
+    }
+    return render(request, 'dashboard/product_form.html', context)
 
 
 @login_required(login_url='login')
 def product_delete(request, pk):
     """Delete a product"""
-    product = Product.objects.get(pk=pk)
-    sales_count = product.sales.count()
+    product = get_object_or_404(Product, pk=pk)
     
     if request.method == 'POST':
-        delete_sales = request.POST.get('delete_sales') == 'on'
-        
-        if delete_sales and sales_count > 0:
-            product.sales.all().delete()
-        
         product_name = product.name
         product.delete()
-        
         messages.success(request, f'Product "{product_name}" deleted successfully!')
-        return redirect('product_list')
+        return redirect('sales')
     
-    return render(request, 'dashboard/product_confirm_delete.html', {
+    context = {
         'product': product,
-        'sales_count': sales_count,
-    })
+    }
+    return render(request, 'dashboard/product_confirm_delete.html', context)
 
 
 # ============================================================================
@@ -432,169 +386,61 @@ def product_delete(request, pk):
 # ============================================================================
 
 @login_required(login_url='login')
-def sales_list(request):
-    """List all sales with advanced filtering"""
-    sales = SalesData.objects.select_related('product').all()
-    
-    # Search functionality
-    search = request.GET.get('search', '')
-    if search:
-        sales = sales.filter(product__name__icontains=search)
-    
-    # Filter by category
-    category = request.GET.get('category', '')
-    if category:
-        sales = sales.filter(product__category=category)
-    
-    # Filter by date range
-    from_date = request.GET.get('from_date', '')
-    to_date = request.GET.get('to_date', '')
-    if from_date:
-        sales = sales.filter(date__gte=from_date)
-    if to_date:
-        sales = sales.filter(date__lte=to_date)
-    
-    # Filter by minimum profit
-    min_profit = request.GET.get('min_profit', '')
-    if min_profit:
-        try:
-            min_profit_val = float(min_profit)
-            sales = sales.filter(profit__gte=min_profit_val)
-        except ValueError:
-            pass
-    
-    # Sort
-    sales = sales.order_by('-date')
-    
-    # Calculate totals
-    total_revenue = sum(s.revenue for s in sales)
-    total_profit = sum(s.profit for s in sales)
-    avg_margin = (total_profit / total_revenue * 100) if total_revenue > 0 else 0
-    
-    # Pagination
-    paginator = Paginator(sales, 25)
-    page = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page)
-    
-    # Get categories for filter
-    categories = Product.objects.values_list('category', flat=True).distinct()
-    
-    context = {
-        'page_obj': page_obj,
-        'categories': categories,
-        'search': search,
-        'category': category,
-        'from_date': from_date,
-        'to_date': to_date,
-        'min_profit': min_profit,
-        'total_revenue': total_revenue,
-        'total_profit': total_profit,
-        'avg_margin': f'{avg_margin:.1f}',
-        'active_page': 'sales',
-    }
-    return render(request, 'dashboard/sales_list.html', context)
-
-
-@login_required(login_url='login')
-def sales_create(request):
-    """Create a new sale"""
+def salesdata_create(request):
+    """Create a new sales record"""
     if request.method == 'POST':
         form = SalesDataForm(request.POST)
         if form.is_valid():
-            sale = form.save()
-            messages.success(request, f'Sale recorded successfully! Profit: ${sale.profit:.2f}')
-            return redirect('sales_list')
+            sales = form.save()
+            messages.success(request, 'Sales record created successfully!')
+            return redirect('data')
+        else:
+            messages.error(request, 'Error creating sales record. Please check the form.')
     else:
         form = SalesDataForm()
     
-    # Get products for the form
-    products = Product.objects.all()
-    
-    return render(request, 'dashboard/sales_form.html', {
+    context = {
         'form': form,
-        'products': products,
-        'title': 'Record New Sale',
-        'button_text': 'Record Sale',
-        'is_create': True,
-    })
+        'action': 'Create',
+    }
+    return render(request, 'dashboard/salesdata_form.html', context)
 
 
 @login_required(login_url='login')
-def sales_edit(request, pk):
-    """Edit an existing sale"""
-    sale = SalesData.objects.get(pk=pk)
-    old_profit = sale.profit
+def salesdata_update(request, pk):
+    """Update an existing sales record"""
+    salesdata = get_object_or_404(SalesData, pk=pk)
     
     if request.method == 'POST':
-        form = SalesDataForm(request.POST, instance=sale)
+        form = SalesDataForm(request.POST, instance=salesdata)
         if form.is_valid():
-            updated_sale = form.save()
-            profit_diff = updated_sale.profit - old_profit
-            
-            if profit_diff >= 0:
-                messages.success(
-                    request,
-                    f'Sale updated! Profit change: +${profit_diff:.2f} '
-                    f'(New profit: ${updated_sale.profit:.2f})'
-                )
-            else:
-                messages.warning(
-                    request,
-                    f'Sale updated! Profit change: ${profit_diff:.2f} '
-                    f'(New profit: ${updated_sale.profit:.2f})'
-                )
-            return redirect('sales_list')
+            sales = form.save()
+            messages.success(request, 'Sales record updated successfully!')
+            return redirect('data')
+        else:
+            messages.error(request, 'Error updating sales record. Please check the form.')
     else:
-        form = SalesDataForm(instance=sale)
+        form = SalesDataForm(instance=salesdata)
     
-    # Get products
-    products = Product.objects.all()
-    
-    return render(request, 'dashboard/sales_form.html', {
+    context = {
         'form': form,
-        'sale': sale,
-        'products': products,
-        'title': f'Edit Sale: {sale.product.name}',
-        'button_text': 'Update Sale',
-        'is_create': False,
-    })
+        'salesdata': salesdata,
+        'action': 'Update',
+    }
+    return render(request, 'dashboard/salesdata_form.html', context)
 
 
 @login_required(login_url='login')
-def sales_delete(request, pk):
-    """Delete a sale"""
-    sale = SalesData.objects.get(pk=pk)
-    lost_profit = sale.profit
+def salesdata_delete(request, pk):
+    """Delete a sales record"""
+    salesdata = get_object_or_404(SalesData, pk=pk)
     
     if request.method == 'POST':
-        sale.delete()
-        
-        messages.success(
-            request,
-            f'Sale deleted. Lost profit: ${lost_profit:.2f}'
-        )
-        return redirect('sales_list')
+        salesdata.delete()
+        messages.success(request, 'Sales record deleted successfully!')
+        return redirect('data')
     
-    return render(request, 'dashboard/sales_confirm_delete.html', {
-        'sale': sale,
-    })
-
-
-# ============================================================================
-# API ENDPOINTS
-# ============================================================================
-
-@login_required(login_url='login')
-def api_product_detail(request, pk):
-    """API endpoint to fetch product details for AJAX calls"""
-    try:
-        product = Product.objects.get(pk=pk)
-        return JsonResponse({
-            'id': product.id,
-            'name': product.name,
-            'category': product.category,
-            'price': float(product.price),
-            'cost': float(product.cost),
-        })
-    except Product.DoesNotExist:
-        return JsonResponse({'error': 'Product not found'}, status=404)
+    context = {
+        'salesdata': salesdata,
+    }
+    return render(request, 'dashboard/salesdata_confirm_delete.html', context)

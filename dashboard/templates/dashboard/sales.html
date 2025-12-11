@@ -156,14 +156,19 @@
         </div>
     </div>
     
+    <a href="{% url 'product_create' %}" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 shadow-lg shadow-teal-500/20">
+        <i class="fas fa-plus"></i>
+        Add Product
+    </a>
+</div>
+
+<div class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700/50 mb-6">
     <div class="flex flex-wrap gap-2" id="filter-container">
         <a href="?filter=all" class="filter-btn {% if current_filter == 'all' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="all">All</a>
         
-        <a href="?filter=laptop" class="filter-btn {% if current_filter == 'laptop' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="laptop">Laptop</a>
-        <a href="?filter=mouse" class="filter-btn {% if current_filter == 'mouse' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="mouse">Mouse</a>
-        <a href="?filter=keyboard" class="filter-btn {% if current_filter == 'keyboard' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="keyboard">Keyboard</a>
-        <a href="?filter=monitor" class="filter-btn {% if current_filter == 'monitor' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="monitor">Monitor</a>
-        <a href="?filter=headset" class="filter-btn {% if current_filter == 'headset' %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200" data-filter="headset">Headset</a>
+        {% for product in all_products %}
+        <a href="?filter={{ product.name|lower }}" class="filter-btn {% if current_filter == product.name|lower %}active bg-teal-500 text-white border-teal-500 shadow-lg shadow-teal-500/20{% else %}bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600{% endif %} px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 capitalize" data-filter="{{ product.name|lower }}">{{ product.name }}</a>
+        {% endfor %}
     </div>
 </div>
 
