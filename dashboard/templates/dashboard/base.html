@@ -193,6 +193,39 @@
         body.bg-gray-50 #settings-modal .bg-gray-800 {
             background-color: #ffffff !important;
         }
+        
+        /* Form inputs in light mode */
+        body.bg-gray-50 input,
+        body.bg-gray-50 select,
+        body.bg-gray-50 textarea {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border-color: #d1d5db !important;
+        }
+        
+        body.bg-gray-50 input::placeholder,
+        body.bg-gray-50 textarea::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        body.bg-gray-50 input:focus,
+        body.bg-gray-50 select:focus,
+        body.bg-gray-50 textarea:focus {
+            border-color: #0d9488 !important;
+            background-color: #ffffff !important;
+        }
+        
+        body.bg-gray-50 input[readonly],
+        body.bg-gray-50 select[readonly],
+        body.bg-gray-50 textarea[readonly] {
+            background-color: #f3f4f6 !important;
+            color: #6b7280 !important;
+        }
+        
+        /* Labels in light mode */
+        body.bg-gray-50 label {
+            color: #374151 !important;
+        }
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen flex text-gray-200 font-sans">
